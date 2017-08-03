@@ -1,0 +1,65 @@
+<resources>
+
+    <!--Style info-->
+    <!--Mac Base Red: 9D0A0E-->
+    <!--Dark to light reds: 4F0002 7A0003 BD1F23 D84549-->
+    <!---->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="listItemTitle">
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textTitle</item>
+    </style>
+
+    <style name="listItemSummary">
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/textSummary</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="listItemDate">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textDate</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="articleContentText">
+        <item name="android:textColor">@color/articleContentText</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="articleTitleText">
+        <item name="android:textColor">@color/articleTitleText</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="articleDetailsText">
+        <item name="android:textColor">@color/detailsText</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+</resources>

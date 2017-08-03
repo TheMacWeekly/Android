@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "203888960732",
+    "firebase_url": "https://macweekly-e8954.firebaseio.com",
+    "project_id": "macweekly-e8954",
+    "storage_bucket": "macweekly-e8954.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203888960732:android:80834d3da2ed27fd",
+        "android_client_info": {
+          "package_name": "hu.ait.macweekly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203888960732-ss4ssji8flhit7g49ec8h0dpqcovhqqf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hu.ait.macweekly",
+            "certificate_hash": "15cb2f27884066aa0217f9cab9126552ab08752b"
+          }
+        },
+        {
+          "client_id": "203888960732-leqvl68c7lt3cif1ar41mtn7giv045e3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGtcIvBGcZmPBOZOiv4IICW0YjwpVAAMk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203888960732-leqvl68c7lt3cif1ar41mtn7giv045e3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

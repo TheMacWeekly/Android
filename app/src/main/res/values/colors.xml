@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#9D0A0E</color>
+    <color name="colorPrimaryDark">#4F0002</color>
+    <color name="colorAccent">#999999</color>
+
+    <!--reds-->
+    <color name="red">#9D0A0E</color>
+
+    <color name="red1">#D84549</color>
+    <color name="red2">#BD1F23</color>
+    <color name="red3">#7A0003</color>
+    <color name="red4">#4F0002</color>
+
+    <!--grays-->
+    <color name="gray">#999999</color>
+
+    <color name="gray1">#F8F8F8</color>
+    <color name="gray2">#C4C4C4</color>
+    <color name="gray3">#6C6C6C</color>
+    <color name="gray4">#333333</color>
+
+    <!--Text-->
+    <color name="articleContentText">#000000</color>
+    <color name="articleTitleText">#333333</color>
+    <color name="textTitle">#000000</color>
+    <color name="textSummary">#333333</color>
+    <color name="textSubTitle">#333333</color>
+    <color name="textDate">#333333</color>
+    <color name="detailsText">#6C6C6C</color>
+</resources>
