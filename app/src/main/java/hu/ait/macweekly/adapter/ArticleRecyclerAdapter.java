@@ -62,6 +62,11 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<ArticleRecycler
         notifyDataSetChanged();
     }
 
+    public void addToDataSet(List<Article> newArticles) {
+        int oldIndexEnd = mDataSet.size() - 1;
+        mDataSet.addAll(newArticles);
+        notifyItemRangeChanged(oldIndexEnd, mDataSet.size());
+    }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
@@ -83,7 +88,7 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<ArticleRecycler
         }
     }
 
-    public List<Article> getmDataSet() {
+    public List<Article> getDataSet() {
         return mDataSet;
     }
 }

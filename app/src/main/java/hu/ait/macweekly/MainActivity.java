@@ -2,11 +2,11 @@ package hu.ait.macweekly;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     // Views
     @BindView(R.id.main_content) RecyclerView mRecyclerView;
+    @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
 
     // Code
     @Override
@@ -55,8 +57,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        prepareFab();
-
         prepareDrawer(toolbar);
 
         prepareNavView();
@@ -65,31 +65,35 @@ public class MainActivity extends AppCompatActivity
 
         prepareContentViews();
 
-
+//        callNewsAPI();
+        addArticles(ARTICLES_PER_CALL);
     }
+
+
 
     private void prepareContentViews() {
         mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this);
+        mArticleAdapter.setDataSet(new ArrayList<Article>());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mArticleAdapter);
-//        mRecyclerView.findView
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                callNewsAPI();
+                addArticles(ARTICLES_PER_CALL);
+            }
+        });
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     private void initContentViews() {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-    }
-
-    private void prepareFab() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                callNewsAPI();
-            }
-        });
     }
 
     private void prepareNavView() {
@@ -138,7 +142,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+//            callNewsAPI();
             return true;
         }
 
@@ -170,8 +175,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void callNewsAPI() {
-        Call<List<Article>> articleCall = newsAPI.getArticles(ARTICLES_PER_CALL);
+    public interface ArticleCallback {
+        void onSuccess(List<Article> articles);
+        void onFailure();
+    }
+
+    private void callNewsAPI(int numArticles, final ArticleCallback articleCallback) {
+
+        Call<List<Article>> articleCall = newsAPI.getArticles(numArticles);
         articleCall.enqueue(new Callback<List<Article>>() {
             @Override
             public void onResponse(Call<List<Article>> call, Response<List<Article>> response) {
@@ -179,16 +190,41 @@ public class MainActivity extends AppCompatActivity
                 if (response.body() != null) {
                     List<Article> uncleanedResponse = response.body();
                     List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
-                    mArticleAdapter.setDataSet(cleanedResponse);
                     Log.d(LOG_TAG, "Got response back");
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                    articleCallback.onSuccess(cleanedResponse);
                 } else {
+                    // TODO: 10/28/17 Show visual issue here
                     Log.e(LOG_TAG, "api response body is null");
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    articleCallback.onFailure();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Article>> call, Throwable t) {
                 Log.e(LOG_TAG, "call failed");
+                mSwipeRefreshLayout.setRefreshing(false);
+                // TODO: 10/28/17 Show visual issue here
+            }
+        });
+    }
+
+    private void addArticles(final int numArticles) {
+        final int startSize = mArticleAdapter.getItemCount();
+        callNewsAPI(numArticles, new ArticleCallback() {
+            @Override
+            public void onSuccess(List<Article> articles) {
+                mArticleAdapter.addToDataSet(articles);
+                if (startSize > 0) {
+                    mArticleAdapter.notifyItemRangeChanged(startSize, numArticles);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                // TODO: 10/29/17 handle this
             }
         });
     }
@@ -206,7 +242,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void articleViewClicked(View view, int position) {
-        showFullArticle(mArticleAdapter.getmDataSet().get(position));
+        showFullArticle(mArticleAdapter.getDataSet().get(position));
     }
 
     private void showFullArticle(Article targetArticle) {
