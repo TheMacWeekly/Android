@@ -14,6 +14,5 @@ import retrofit2.http.Query;
 public interface NewsAPI {
 
     @GET("wp-json/wp/v2/posts")
-    Call<List<Article>> getArticles(@Query("per_page") int numArticles);
-
+    Call<List<Article>> getArticles(@Query("page") int pageNum, @Query("per_page") int amountPerPage);
 }

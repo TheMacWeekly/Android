@@ -12,7 +12,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hu.ait.macweekly.ArticleViewClickListener;
+import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.R;
 import hu.ait.macweekly.data.Article;
 

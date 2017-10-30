@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hu.ait.macweekly.adapter.ArticleRecyclerAdapter;
 import hu.ait.macweekly.data.Article;
+import hu.ait.macweekly.listeners.ArticleViewClickListener;
+import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 import hu.ait.macweekly.network.NewsAPI;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,16 +34,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        ArticleViewClickListener{
+        ArticleViewClickListener {
 
     // Constants
     private final String LOG_TAG = "MainActivity - ";
 
-    private final int ARTICLES_PER_CALL = 10;
+    private final int ARTICLES_PER_CALL = 25;
 
     // Members
     private NewsAPI newsAPI;
     private ArticleRecyclerAdapter mArticleAdapter;
+    private EndlessRecyclerViewScrollListener mEndlessScrollListener;
 
     // Views
     @BindView(R.id.main_content) RecyclerView mRecyclerView;
@@ -65,8 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         prepareContentViews();
 
-//        callNewsAPI();
-        addArticles(ARTICLES_PER_CALL);
+        addArticles(1);
     }
 
 
@@ -74,21 +75,30 @@ public class MainActivity extends AppCompatActivity
     private void prepareContentViews() {
         mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this);
         mArticleAdapter.setDataSet(new ArrayList<Article>());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mArticleAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 //                callNewsAPI();
-                addArticles(ARTICLES_PER_CALL);
+                resetArticles();
             }
         });
-        mSwipeRefreshLayout.post(new Runnable() {
+        mSwipeRefreshLayout.post(new Runnable() { // TODO: 10/29/17 Need this?
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
+
+        mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                addArticles(page);
+            }
+        };
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
     }
 
     private void initContentViews() {
@@ -143,7 +153,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-//            callNewsAPI();
+            resetArticles();
             return true;
         }
 
@@ -180,9 +190,9 @@ public class MainActivity extends AppCompatActivity
         void onFailure();
     }
 
-    private void callNewsAPI(int numArticles, final ArticleCallback articleCallback) {
+    private void callNewsAPI(int pageNum, final ArticleCallback articleCallback) {
 
-        Call<List<Article>> articleCall = newsAPI.getArticles(numArticles);
+        Call<List<Article>> articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
         articleCall.enqueue(new Callback<List<Article>>() {
             @Override
             public void onResponse(Call<List<Article>> call, Response<List<Article>> response) {
@@ -211,14 +221,20 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void addArticles(final int numArticles) {
+    private void resetArticles() {
+        mArticleAdapter.setDataSet(new ArrayList<Article>());
+        mArticleAdapter.notifyDataSetChanged();
+        addArticles(1);
+    }
+
+    private void addArticles(int pageNum) {
         final int startSize = mArticleAdapter.getItemCount();
-        callNewsAPI(numArticles, new ArticleCallback() {
+        callNewsAPI(pageNum, new ArticleCallback() {
             @Override
             public void onSuccess(List<Article> articles) {
                 mArticleAdapter.addToDataSet(articles);
                 if (startSize > 0) {
-                    mArticleAdapter.notifyItemRangeChanged(startSize, numArticles);
+                    mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
                 }
             }
 

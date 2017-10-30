@@ -1,4 +1,4 @@
-package hu.ait.macweekly;
+package hu.ait.macweekly.listeners;
 
 import android.view.View;
 

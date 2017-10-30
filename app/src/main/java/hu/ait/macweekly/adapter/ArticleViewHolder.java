@@ -1,15 +1,5 @@
 package hu.ait.macweekly.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
-
-import butterknife.BindColor;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import hu.ait.macweekly.ArticleViewClickListener;
-import hu.ait.macweekly.R;
-
 /**
  * Created by Mack on 7/9/2017.
  */
