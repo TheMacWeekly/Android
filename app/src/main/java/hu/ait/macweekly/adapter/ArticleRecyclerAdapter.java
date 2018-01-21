@@ -49,7 +49,9 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<ArticleRecycler
 
         holder.title.setText(article.title.rendered);
         holder.sum.setText(Html.fromHtml(article.excerpt.rendered));
-        holder.date.setText(article.date);
+
+        String tempDateVal = article.date;
+        holder.date.setText(tempDateVal.replaceAll("T.*", ""));
     }
 
     @Override

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
         prepareDrawer(toolbar);
 
-        prepareNavView();
+//        prepareNavView();
 
         prepareNewsAPI();
 
@@ -113,10 +113,11 @@ public class MainActivity extends AppCompatActivity
 
     private void prepareDrawer(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); // TODO: 10/30/17 Turn this back on when feature finished
     }
 
     public void prepareNewsAPI() {

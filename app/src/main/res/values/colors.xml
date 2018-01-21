@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#9D0A0E</color>
-    <color name="colorPrimaryDark">#4F0002</color>
+    <color name="colorPrimary">#01436A</color>
+    <color name="colorPrimaryDark">#001D2E</color>
     <color name="colorAccent">#999999</color>
 
     <!--reds-->
-    <color name="red">#9D0A0E</color>
+    <color name="red">#01436A</color>
 
-    <color name="red1">#D84549</color>
-    <color name="red2">#BD1F23</color>
-    <color name="red3">#7A0003</color>
-    <color name="red4">#4F0002</color>
+    <color name="red1">#04649D</color>
+    <color name="red2">#025383</color>
+    <color name="red3">#00324F</color>
+    <color name="red4">#001D2E</color>
 
     <!--grays-->
     <color name="gray">#999999</color>

@@ -2,12 +2,8 @@ package hu.ait.macweekly;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -46,17 +42,18 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
     private void bindArticleViews() {
-        mContentTextView.setText(Html.fromHtml(mContentData));
-        mTitleView.setText(Html.fromHtml(mTitleData));
+        mContentTextView.setText(HTMLCompat.getInstance(getApplicationContext()).fromImageHtml(mContentData, mContentTextView, this));
+        mTitleView.setText(HTMLCompat.getInstance(getApplicationContext()).fromHtml(mTitleData));
         mDateView.setText(mDateData);
-        mAuthorView.setText("Needto Make. Work");
+        //mAuthorView.setText("Needto Make. Work"); // TODO: 10/30/17 Get author info
     }
 
     private void populateDataMembers() {
         Intent validIntent = getIntent();
         mTitleData = validIntent.getStringExtra(ARTICLE_TITLE_KEY);
         mAutorData = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
-        mDateData = validIntent.getStringExtra(ARTICLE_DATE_KEY);
+        String tempDateVal = validIntent.getStringExtra(ARTICLE_DATE_KEY);
+        mDateData = tempDateVal.replaceAll("T.*", "");
         mContentData = validIntent.getStringExtra(ARTICLE_CONTENT_KEY);
     }
 

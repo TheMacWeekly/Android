@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MacWeekly</string>
+    <string name="app_name">The Mac Weekly</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -27,7 +27,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="pass_leng">Must be 8 or more characters</string>
     <string name="error_must_be_email">Must be an email</string>
-    <string name="title_activity_article">ArticleActivity</string>
+    <string name="title_activity_article">Article</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
