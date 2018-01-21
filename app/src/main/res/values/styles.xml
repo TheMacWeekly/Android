@@ -49,7 +49,7 @@
 
     <style name="articleContentText">
         <item name="android:textColor">@color/articleContentText</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="articleTitleText">
@@ -59,7 +59,7 @@
 
     <style name="articleDetailsText">
         <item name="android:textColor">@color/detailsText</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

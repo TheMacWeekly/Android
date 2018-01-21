@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import javax.crypto.Mac;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,7 +55,7 @@ public class ArticleActivity extends AppCompatActivity {
         mTitleData = validIntent.getStringExtra(ARTICLE_TITLE_KEY);
         mAutorData = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
         String tempDateVal = validIntent.getStringExtra(ARTICLE_DATE_KEY);
-        mDateData = tempDateVal.replaceAll("T.*", "");
+        mDateData = MacWeeklyUtils.formatDateFull(tempDateVal);
         mContentData = validIntent.getStringExtra(ARTICLE_CONTENT_KEY);
     }
 

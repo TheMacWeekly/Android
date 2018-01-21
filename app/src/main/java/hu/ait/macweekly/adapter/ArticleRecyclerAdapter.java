@@ -2,7 +2,6 @@ package hu.ait.macweekly.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hu.ait.macweekly.HTMLCompat;
+import hu.ait.macweekly.MacWeeklyUtils;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.R;
 import hu.ait.macweekly.data.Article;
@@ -48,10 +49,11 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<ArticleRecycler
         Article article = mDataSet.get(position);
 
         holder.title.setText(article.title.rendered);
-        holder.sum.setText(Html.fromHtml(article.excerpt.rendered));
+        holder.sum.setText(HTMLCompat.getInstance(mContext).fromHtml(article.excerpt.rendered));
 
         String tempDateVal = article.date;
-        holder.date.setText(tempDateVal.replaceAll("T.*", ""));
+        String correctlyFormattedDate = MacWeeklyUtils.formatDateTimeAgo(tempDateVal);
+        holder.date.setText(correctlyFormattedDate);
     }
 
     @Override
