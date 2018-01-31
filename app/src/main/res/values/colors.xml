@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#001D2E</color>
     <color name="colorAccent">#999999</color>
 
+    <!--white-->
+    <color name="white">#FFFFFF</color>
+
+    <!--black-->
+    <color name="black">#000000</color>
+
     <!--reds-->
     <color name="red">#01436A</color>
 
@@ -20,12 +26,22 @@
     <color name="gray3">#6C6C6C</color>
     <color name="gray4">#333333</color>
 
+    <color name="negativeArea">#E6E8E7</color>
+
     <!--Text-->
     <color name="articleContentText">#000000</color>
     <color name="articleTitleText">#333333</color>
     <color name="textTitle">#000000</color>
-    <color name="textSummary">#333333</color>
+    <color name="textSummary">#555555</color>
     <color name="textSubTitle">#333333</color>
-    <color name="textDate">#333333</color>
+    <color name="textDate">#555555</color>
     <color name="detailsText">#6C6C6C</color>
+
+    <!--Newsfeed-->
+    <color name="newsFeedHeaderText">#333333</color>
+
+    <!--error text-->
+    <color name="errorTitle">#000000</color>
+    <color name="errorText">#666666</color>
+
 </resources>

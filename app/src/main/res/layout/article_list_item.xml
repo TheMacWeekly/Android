@@ -4,26 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="0dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="1.5dp"
-    app:cardElevation="3dp"
-    app:cardUseCompatPadding="true"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginTop="4dp">
+    app:cardCornerRadius="1dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp">
 
         <TextView
             android:id="@+id/title"
             style="@style/listItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="4dp"
             tools:text="Test" />
 
         <TextView
@@ -40,6 +44,13 @@
             android:layout_height="wrap_content"
             tools:text="Some day" />
 
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray3" />
+
 
 </android.support.v7.widget.CardView>

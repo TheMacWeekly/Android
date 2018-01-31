@@ -10,11 +10,12 @@ import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,10 @@ public class MainActivity extends AppCompatActivity
     private EndlessRecyclerViewScrollListener mEndlessScrollListener;
 
     // Views
-    @BindView(R.id.main_content) RecyclerView mRecyclerView;
+    @BindView(R.id.main_content) RecyclerView mMainContent;
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.newsFeedErrorView) LinearLayout mErrorView;
+    @BindView(R.id.errorButton) Button mButtonView;
 
     // Code
     @Override
@@ -76,8 +79,8 @@ public class MainActivity extends AppCompatActivity
         mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this);
         mArticleAdapter.setDataSet(new ArrayList<Article>());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setAdapter(mArticleAdapter);
+        mMainContent.setLayoutManager(linearLayoutManager);
+        mMainContent.setAdapter(mArticleAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -98,12 +101,21 @@ public class MainActivity extends AppCompatActivity
                 addArticles(page);
             }
         };
-        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
+        mMainContent.addOnScrollListener(mEndlessScrollListener);
+
+        mButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetArticles();
+            }
+        });
     }
 
     private void initContentViews() {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        hideNewsFeed();
+        hideErrorScreen();
     }
 
     private void prepareNavView() {
@@ -186,6 +198,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void showNewsFeed() {mMainContent.setVisibility(View.VISIBLE);}
+    public void hideNewsFeed() {mMainContent.setVisibility(View.GONE);}
+    public void showErrorScreen() {mErrorView.setVisibility(View.VISIBLE);}
+    public void hideErrorScreen() {mErrorView.setVisibility(View.GONE);}
+
     public interface ArticleCallback {
         void onSuccess(List<Article> articles);
         void onFailure();
@@ -203,12 +220,17 @@ public class MainActivity extends AppCompatActivity
                     List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
                     Log.d(LOG_TAG, "Got response back");
                     mSwipeRefreshLayout.setRefreshing(false);
+                    hideErrorScreen();
+                    showNewsFeed();
 
                     articleCallback.onSuccess(cleanedResponse);
                 } else {
                     // TODO: 10/28/17 Show visual issue here
                     Log.e(LOG_TAG, "api response body is null");
                     mSwipeRefreshLayout.setRefreshing(false);
+                    hideNewsFeed();
+                    showErrorScreen();
+
                     articleCallback.onFailure();
                 }
             }
@@ -217,12 +239,13 @@ public class MainActivity extends AppCompatActivity
             public void onFailure(Call<List<Article>> call, Throwable t) {
                 Log.e(LOG_TAG, "call failed");
                 mSwipeRefreshLayout.setRefreshing(false);
-                // TODO: 10/28/17 Show visual issue here
+                showErrorScreen();
             }
         });
     }
 
     private void resetArticles() {
+        hideNewsFeed();
         mArticleAdapter.setDataSet(new ArrayList<Article>());
         mArticleAdapter.notifyDataSetChanged();
         addArticles(1);

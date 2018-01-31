@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/negativeArea">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        style="@style/newsFeedHeader"
+        android:text="@string/top_stories"
+        android:paddingLeft="16dp"
+        android:paddingBottom="8dp"
+        />
+
+</LinearLayout>

@@ -117,5 +117,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="top_stories">Top Stories</string>
+    <string name="retry">Retry</string>
+    <string name="network_connection_issue">It seems like there was a network issue. Check your connection or try again.</string>
+    <string name="oh_no">Oh no!</string>
 
 </resources>
