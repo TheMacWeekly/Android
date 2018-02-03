@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity
         addArticles(1);
     }
 
-
-
     private void prepareContentViews() {
         mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this);
         mArticleAdapter.setDataSet(new ArrayList<Article>());
@@ -277,7 +275,7 @@ public class MainActivity extends AppCompatActivity
 
         for (int i = uncleanedResponse.size() - 1; i >= 0; i--) {
             Article article = uncleanedResponse.get(i);
-            
+
             if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered) || article.content.rendered.length() < MIN_CHAR_COUNT_FOR_ARTICLE) {
 
                 uncleanedResponse.remove(i);
@@ -285,7 +283,6 @@ public class MainActivity extends AppCompatActivity
         }
         return uncleanedResponse;
     }
-
 
     @Override
     public void articleViewClicked(View view, int position) {
