@@ -277,13 +277,8 @@ public class MainActivity extends AppCompatActivity
 
         for (int i = uncleanedResponse.size() - 1; i >= 0; i--) {
             Article article = uncleanedResponse.get(i);
-
-
-            int test = article.content.rendered.length();
-
+            
             if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered) || article.content.rendered.length() < MIN_CHAR_COUNT_FOR_ARTICLE) {
-
-                String name = article.title.toString();
 
                 uncleanedResponse.remove(i);
             }
