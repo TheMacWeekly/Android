@@ -270,11 +270,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private List<Article> cleanResponse(List<Article> uncleanedResponse) {
-        int MIN_CHAR_COUNT_FOR_ARTICLE = 200; // Articles with char count < this val likely only have a video or audio link which our app doesn't handle.
+        int MIN_CHAR_COUNT_FOR_ARTICLE = 1200; // Articles with char count < this val likely only have a video or audio link which our app doesn't handle.
+        //TODO: This also means however that we aren't loading things like comics or single images.
+        //Ultimately we want to be able to load videos or audio.
+
+
         for (int i = uncleanedResponse.size() - 1; i >= 0; i--) {
             Article article = uncleanedResponse.get(i);
-            if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered)
-                    || article.content.rendered.length() < MIN_CHAR_COUNT_FOR_ARTICLE) {
+
+
+            int test = article.content.rendered.length();
+
+            if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered) || article.content.rendered.length() < MIN_CHAR_COUNT_FOR_ARTICLE) {
+
+                String name = article.title.toString();
+
                 uncleanedResponse.remove(i);
             }
         }
