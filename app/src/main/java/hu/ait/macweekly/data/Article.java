@@ -79,5 +79,7 @@ public class Article {
     @SerializedName("_links")
     @Expose
     public Links links;
-
+    @SerializedName("guest_author")
+    @Expose
+    public GuestAuthor guestAuthor;
 }

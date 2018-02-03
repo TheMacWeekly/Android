@@ -72,7 +72,6 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
             aVH.title.setText(HTMLCompat.getInstance(mContext).fromHtml(article.title.rendered));
             aVH.sum.setText(HTMLCompat.getInstance(mContext).fromHtml(article.excerpt.rendered));
-
             String tempDateVal = article.date;
             String correctlyFormattedDate = MacWeeklyUtils.formatDateTimeAgo(tempDateVal);
             aVH.date.setText(correctlyFormattedDate);

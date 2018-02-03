@@ -38,8 +38,7 @@
                 android:id="@+id/article_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="28dp"
                 tools:text="Author Name" />
 
             <TextView
@@ -47,9 +46,7 @@
                 android:id="@+id/article_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="12dp"
                 tools:text="Date/dt/dt" />
 
             <TextView

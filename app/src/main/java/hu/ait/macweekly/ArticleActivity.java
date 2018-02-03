@@ -47,13 +47,17 @@ public class ArticleActivity extends AppCompatActivity {
         mContentTextView.setText(HTMLCompat.getInstance(getApplicationContext()).fromImageHtml(mContentData, mContentTextView, this));
         mTitleView.setText(HTMLCompat.getInstance(getApplicationContext()).fromHtml(mTitleData));
         mDateView.setText(mDateData);
-        //mAuthorView.setText("Needto Make. Work"); // TODO: 10/30/17 Get author info
+        mAuthorView.setText(mAutorData); // TODO: 10/30/17 Get author info
     }
 
     private void populateDataMembers() {
         Intent validIntent = getIntent();
         mTitleData = validIntent.getStringExtra(ARTICLE_TITLE_KEY);
-        mAutorData = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
+
+        String authorText = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
+        if(!authorText.equals(mTitleData)) mAutorData = authorText; //Currently the mac weekly is a mess and when they don't have guest authors stored the title is stored here instead :/
+        else mAutorData = "";
+
         String tempDateVal = validIntent.getStringExtra(ARTICLE_DATE_KEY);
         mDateData = MacWeeklyUtils.formatDateFull(tempDateVal);
         mContentData = validIntent.getStringExtra(ARTICLE_CONTENT_KEY);

@@ -270,9 +270,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private List<Article> cleanResponse(List<Article> uncleanedResponse) {
+        int MIN_CHAR_COUNT_FOR_ARTICLE = 200; // Articles with char count < this val likely only have a video or audio link which our app doesn't handle.
         for (int i = uncleanedResponse.size() - 1; i >= 0; i--) {
             Article article = uncleanedResponse.get(i);
-            if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered)) {
+            if (MacWeeklyUtils.isTextEmpty(article.excerpt.rendered)
+                    || article.content.rendered.length() < MIN_CHAR_COUNT_FOR_ARTICLE) {
                 uncleanedResponse.remove(i);
             }
         }
@@ -292,6 +294,7 @@ public class MainActivity extends AppCompatActivity
                 .rendered);
         articleIntent.putExtra(ArticleActivity.ARTICLE_DATE_KEY, targetArticle.date);
         articleIntent.putExtra(ArticleActivity.ARTICLE_TITLE_KEY, targetArticle.title.rendered);
+        articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, targetArticle.guestAuthor.name);
         startActivity(articleIntent);
     }
 }

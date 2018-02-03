@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import org.xml.sax.XMLReader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
