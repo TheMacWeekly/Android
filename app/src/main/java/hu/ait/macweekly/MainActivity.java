@@ -290,13 +290,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showFullArticle(Article targetArticle) {
+
+        String authorName = "";
+        if(targetArticle.guestAuthor != null && targetArticle.guestAuthor.name != null)
+            authorName = targetArticle.guestAuthor.name;
+
         Intent articleIntent = new Intent(this, ArticleActivity.class);
         articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, "Author name here");
         articleIntent.putExtra(ArticleActivity.ARTICLE_CONTENT_KEY, targetArticle.content
                 .rendered);
         articleIntent.putExtra(ArticleActivity.ARTICLE_DATE_KEY, targetArticle.date);
         articleIntent.putExtra(ArticleActivity.ARTICLE_TITLE_KEY, targetArticle.title.rendered);
-        articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, targetArticle.guestAuthor.name);
+        articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, authorName);
         startActivity(articleIntent);
     }
 }

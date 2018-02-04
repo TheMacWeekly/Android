@@ -55,7 +55,7 @@ public class ArticleActivity extends AppCompatActivity {
         mTitleData = validIntent.getStringExtra(ARTICLE_TITLE_KEY);
 
         String authorText = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
-        if(!authorText.equals(mTitleData)) mAutorData = authorText; //Currently the mac weekly is a mess and when they don't have guest authors stored the title is stored here instead :/
+        if(authorText != null) mAutorData = authorText; //Currently the mac weekly is a mess and when they don't have guest authors stored the title is stored here instead :/
         else mAutorData = "";
 
         String tempDateVal = validIntent.getStringExtra(ARTICLE_DATE_KEY);
