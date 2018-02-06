@@ -121,5 +121,8 @@
     <string name="retry">Retry</string>
     <string name="network_connection_issue">It seems like there was a network issue. Check your connection or try again.</string>
     <string name="oh_no">Oh no!</string>
+    <string name="creators_string">Developed by Mack Hartly, Amanda Doan, and Hunter Herman.</string>
+    <string name="about_label">About</string>
+    <string name="version_stub">Version</string>
 
 </resources>
