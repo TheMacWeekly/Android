@@ -9,4 +9,5 @@
 .externalNativeBuild
 .idea/vcs.xml
 *app-release.apk
-
+.idea/misc.xml
+app/app-release.apk
