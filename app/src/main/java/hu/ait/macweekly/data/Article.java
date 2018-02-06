@@ -76,10 +76,16 @@ public class Article {
     @SerializedName("tags")
     @Expose
     public List<Integer> tags = null;
-    @SerializedName("_links")
-    @Expose
-    public Links links;
     @SerializedName("guest_author")
     @Expose
     public GuestAuthor guestAuthor;
+    @SerializedName("normal_thumbnail_url")
+    @Expose
+    public String normalThumbnailUrl;
+    @SerializedName("full_thumbnail_url")
+    @Expose
+    public String fullThumbnailUrl;
+    @SerializedName("_links")
+    @Expose
+    public Links links;
 }
