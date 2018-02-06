@@ -166,9 +166,18 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_refresh) {
             resetArticles();
             return true;
+        }else if (id == R.id.about_page) {
+            goToAboutPage();
+            resetArticles();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToAboutPage() {
+        Intent aboutPageIntent = new Intent(this, AboutPage.class);
+        startActivity(aboutPageIntent);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

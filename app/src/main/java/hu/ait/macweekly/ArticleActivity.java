@@ -15,7 +15,7 @@ public class ArticleActivity extends AppCompatActivity {
 
     // Keys
     public static final String ARTICLE_TITLE_KEY = "articleTitleKey";
-    public static final String ARTICLE_AUTHOR_KEY = "articleAuthoKey";
+    public static final String ARTICLE_AUTHOR_KEY = "articleAuthorKey";
     public static final String ARTICLE_DATE_KEY = "articleDateKey";
     public static final String ARTICLE_CONTENT_KEY = "articleContentKey";
 

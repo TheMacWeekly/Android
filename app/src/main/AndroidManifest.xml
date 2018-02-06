@@ -39,6 +39,11 @@
             android:name=".ArticleActivity"
             android:label="@string/title_activity_article"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".AboutPage"
+            android:label="@string/about_label"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>
