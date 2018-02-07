@@ -24,7 +24,7 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
-    <style name="listItemTitle">
+    <style name="summaryTitle">
         <item name="android:paddingBottom">4dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -34,7 +34,7 @@
         <item name="android:textColor">@color/textTitle</item>
     </style>
 
-    <style name="listItemSummary">
+    <style name="summaryExcerpt">
         <item name="android:paddingBottom">4dp</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/textSummary</item>
@@ -44,7 +44,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="listItemDate">
+    <style name="summaryDetails">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/textDate</item>

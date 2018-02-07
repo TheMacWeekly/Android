@@ -48,12 +48,18 @@ public class MacWeeklyUtils {
                 String dayField = dateItems[2];
                 String yearField = dateItems[0];
                 resDifference = new StringBuilder(formatDateFull(oldDateString));
-            } else if(day > 0) {
+            } else if(day > 1) {
                 resDifference.append(day).append(" days ago");
-            } else if(hour > 0) {
+            }else if(day > 0) {
+                resDifference.append(day).append(" day ago");
+            } else if(hour > 1) {
                 resDifference.append(hour).append(" hours ago");
-            } else if(min > 0) {
+            } else if(hour > 0) {
+                resDifference.append(hour).append(" hour ago");
+            } else if(min > 1) {
                 resDifference.append(min).append(" minutes ago");
+            } else if(min > 0) {
+                resDifference.append(min).append(" minute ago");
             } else if(seconds > 0) {
                 resDifference.append(seconds).append(" seconds ago");
             } else {

@@ -8,7 +8,7 @@
         android:right="20dp">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/splash_icon"/>
+            android:src="@drawable/app_icon_128_transparent"/>
     </item>
 
 </layer-list>

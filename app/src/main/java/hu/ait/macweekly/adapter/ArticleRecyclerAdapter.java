@@ -6,7 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -67,14 +70,35 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
             //This position is reserved for the header. No work needs to be done here. This is
             //just for readability
         } else {
-            ArticleViewHolder aVH = (ArticleViewHolder) holder;
+            ArticleViewHolder summaryViewHolder = (ArticleViewHolder) holder;
             Article article = mDataSet.get(position-1);
 
-            aVH.title.setText(HTMLCompat.getInstance(mContext).fromHtml(article.title.rendered));
-            aVH.sum.setText(HTMLCompat.getInstance(mContext).fromHtml(article.excerpt.rendered));
+            // Load title
+            summaryViewHolder.title.setText(HTMLCompat.getInstance(mContext).fromHtml(article.title.rendered));
+
+            // Load excerpt
+            summaryViewHolder.sum.setText(HTMLCompat.getInstance(mContext).fromHtml(article.excerpt.rendered));
+
+            // Load the date, get it in a nice readable format first
             String tempDateVal = article.date;
             String correctlyFormattedDate = MacWeeklyUtils.formatDateTimeAgo(tempDateVal);
-            aVH.date.setText(correctlyFormattedDate);
+            summaryViewHolder.date.setText(correctlyFormattedDate);
+
+            // Load guest author name if it exists. If not just put Mac Weekly as Author
+            String authorName;
+            if(article.guestAuthor == null || MacWeeklyUtils.isTextEmpty(article.guestAuthor.name)) authorName = "The Mac Weekly";
+            else authorName = article.guestAuthor.name;
+            summaryViewHolder.author.setText(HTMLCompat.getInstance(mContext).fromHtml(authorName));
+
+            // Load image thumbnail if url exists
+            if(!MacWeeklyUtils.isTextEmpty(article.normalThumbnailUrl)) {
+                String fullImgUrl = article.normalThumbnailUrl;
+                Glide.with(mContext).load(fullImgUrl).into(summaryViewHolder.thumbnailView);
+                summaryViewHolder.thumbnailView.setVisibility(View.VISIBLE);
+            } else {
+                Glide.clear(summaryViewHolder.thumbnailView);
+                summaryViewHolder.thumbnailView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -100,6 +124,8 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         @BindView(R.id.title) TextView title;
         @BindView(R.id.summary) TextView sum;
         @BindView(R.id.date) TextView date;
+        @BindView(R.id.authorField) TextView author;
+        @BindView(R.id.articleThumbnail) ImageView thumbnailView;
 
         public ArticleViewHolder(View view) {
             super(view);

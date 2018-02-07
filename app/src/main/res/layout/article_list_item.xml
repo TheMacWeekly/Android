@@ -13,46 +13,80 @@
     app:cardElevation="1dp"
     app:cardUseCompatPadding="false">
 
-    <!--<ImageView-->
-        <!--android:id="@+id/articleThumbnail"-->
-        <!--android:src="@drawable/splash_icon"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:scaleType="fitCenter" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:paddingBottom="12dp"
-        android:paddingTop="12dp">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/listItemTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/articleThumbnail"
+            android:src="@drawable/splash_icon"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"
-            tools:text="Test" />
+            android:layout_marginLeft="12dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="visible"/>
 
-        <TextView
-            android:id="@+id/summary"
-            style="@style/listItemSummary"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="summaryshit summaryshit summaryshit summaryshit summaryshit summaryshit " />
+            android:orientation="vertical"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/date"
-            style="@style/listItemDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Some day" />
+            <TextView
+                android:id="@+id/title"
+                style="@style/summaryTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Article Title: Have " />
 
+            <TextView
+                android:id="@+id/summary"
+                style="@style/summaryExcerpt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Here is where the article summary will go. It will likely be too long and be cut off at some point which is fine since it truncates "
+                android:layout_marginTop="0dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="0dp">
+
+                <TextView
+                    android:id="@+id/authorField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="John Smith"
+                    style="@style/summaryExcerpt"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  -  "
+                    style="@style/summaryDetails"/>
+
+                <TextView
+                    android:id="@+id/date"
+                    style="@style/summaryDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="53 minutes ago" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
 
     <View
         android:layout_width="match_parent"
