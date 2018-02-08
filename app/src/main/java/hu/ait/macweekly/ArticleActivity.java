@@ -71,13 +71,8 @@ public class ArticleActivity extends AppCompatActivity {
         if (id == R.id.action_share) {
             Intent sendIntent = new Intent(Intent.ACTION_SEND);
             sendIntent.setType("text/plain");
-            sendIntent.putExtra(Intent.EXTRA_TEXT, ARTICLE_LINK_KEY);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mLinkData);
             mShareActionProvider.setShareIntent(sendIntent);
-//            Intent sendIntent = new Intent();
-//            sendIntent.setAction(Intent.ACTION_SEND);
-//            sendIntent.putExtra(Intent.EXTRA_TEXT, ARTICLE_LINK_KEY);
-//            sendIntent.setType("text/plain");
-//            mShareActionProvider.setShareIntent(sendIntent);
             return true;
         }
 
