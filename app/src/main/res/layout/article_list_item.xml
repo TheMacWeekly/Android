@@ -20,7 +20,6 @@
 
         <ImageView
             android:id="@+id/articleThumbnail"
-            android:src="@drawable/splash_icon"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:scaleType="fitCenter"
