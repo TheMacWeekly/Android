@@ -2,13 +2,13 @@ package hu.ait.macweekly;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import javax.crypto.Mac;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +34,7 @@ public class ArticleActivity extends AppCompatActivity {
     String mDateData;
     String mContentData;
     String mLinkData;
+    ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,12 @@ public class ArticleActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_article, menu);
+        // Locate MenuItem with ShareActionProvider
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        // Fetch and store ShareActionProvider
+        mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+        // Return true to display menu
         return true;
     }
 
@@ -61,8 +68,16 @@ public class ArticleActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.share_article) {
-            
+        if (id == R.id.action_share) {
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, ARTICLE_LINK_KEY);
+            mShareActionProvider.setShareIntent(sendIntent);
+//            Intent sendIntent = new Intent();
+//            sendIntent.setAction(Intent.ACTION_SEND);
+//            sendIntent.putExtra(Intent.EXTRA_TEXT, ARTICLE_LINK_KEY);
+//            sendIntent.setType("text/plain");
+//            mShareActionProvider.setShareIntent(sendIntent);
             return true;
         }
 
