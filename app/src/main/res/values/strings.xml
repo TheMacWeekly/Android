@@ -124,5 +124,6 @@
     <string name="creators_string">Developed by Mack Hartley, Amanda Doan, and Hunter Herman.</string>
     <string name="about_label">About</string>
     <string name="version_stub">Version </string>
+    <string name="share_article">Share</string>
 
 </resources>
