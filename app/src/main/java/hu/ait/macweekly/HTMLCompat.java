@@ -56,7 +56,7 @@ public class HTMLCompat {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY, new URLImageParser(tv, context), new ImageTagParser());
         } else {
-            return Html.fromHtml(source, Html.FROM_HTML_MODE_COMPACT, new URLImageParser(tv, context), new ImageTagParser());
+            return Html.fromHtml(source, new URLImageParser(tv, context), new ImageTagParser());
         }
     }
 
