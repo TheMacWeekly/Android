@@ -2,11 +2,13 @@ package hu.ait.macweekly;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
-
-import javax.crypto.Mac;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,6 +20,7 @@ public class ArticleActivity extends AppCompatActivity {
     public static final String ARTICLE_AUTHOR_KEY = "articleAuthorKey";
     public static final String ARTICLE_DATE_KEY = "articleDateKey";
     public static final String ARTICLE_CONTENT_KEY = "articleContentKey";
+    public static final String ARTICLE_LINK_KEY = "articleLinkKey";
 
     // Views
     @BindView(R.id.article_content) TextView mContentTextView;
@@ -30,6 +33,8 @@ public class ArticleActivity extends AppCompatActivity {
     String mAutorData;
     String mDateData;
     String mContentData;
+    String mLinkData;
+    ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,37 @@ public class ArticleActivity extends AppCompatActivity {
         populateDataMembers();
 
         bindArticleViews();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_article, menu);
+        // Locate MenuItem with ShareActionProvider
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        // Fetch and store ShareActionProvider
+        mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+        // Return true to display menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_share) {
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mLinkData);
+            mShareActionProvider.setShareIntent(sendIntent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void bindArticleViews() {
@@ -61,6 +97,7 @@ public class ArticleActivity extends AppCompatActivity {
         String tempDateVal = validIntent.getStringExtra(ARTICLE_DATE_KEY);
         mDateData = MacWeeklyUtils.formatDateFull(tempDateVal);
         mContentData = validIntent.getStringExtra(ARTICLE_CONTENT_KEY);
+        mLinkData = validIntent.getStringExtra(ARTICLE_LINK_KEY);
     }
 
     private void initContentView() {
@@ -82,7 +119,8 @@ public class ArticleActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(ARTICLE_AUTHOR_KEY) && intent.hasExtra(ARTICLE_DATE_KEY) && intent
-                    .hasExtra(ARTICLE_CONTENT_KEY) && intent.hasExtra(ARTICLE_TITLE_KEY)) {
+                    .hasExtra(ARTICLE_CONTENT_KEY) && intent.hasExtra(ARTICLE_TITLE_KEY) && intent
+                    .hasExtra(ARTICLE_LINK_KEY)) {
                 return false;
             }
         }

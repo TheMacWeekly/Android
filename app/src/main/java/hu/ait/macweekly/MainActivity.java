@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity
         articleIntent.putExtra(ArticleActivity.ARTICLE_DATE_KEY, targetArticle.date);
         articleIntent.putExtra(ArticleActivity.ARTICLE_TITLE_KEY, targetArticle.title.rendered);
         articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, authorName);
+        articleIntent.putExtra(ArticleActivity.ARTICLE_LINK_KEY, targetArticle.link);
         startActivity(articleIntent);
     }
 }
