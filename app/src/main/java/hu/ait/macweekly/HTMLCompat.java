@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import org.xml.sax.XMLReader;
 
 import java.io.ByteArrayInputStream;

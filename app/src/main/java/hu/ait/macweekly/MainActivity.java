@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import hu.ait.macweekly.adapter.ArticleRecyclerAdapter;
 import hu.ait.macweekly.data.Article;
+import hu.ait.macweekly.data.GuestAuthor;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 import hu.ait.macweekly.network.NewsAPI;
@@ -112,8 +113,6 @@ public class MainActivity extends AppCompatActivity
     private void initContentViews() {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        hideNewsFeed();
-        hideErrorScreen();
     }
 
     private void prepareNavView() {
@@ -205,10 +204,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void showNewsFeed() {mMainContent.setVisibility(View.VISIBLE);}
-    public void hideNewsFeed() {mMainContent.setVisibility(View.GONE);}
-    public void showErrorScreen() {mErrorView.setVisibility(View.VISIBLE);}
-    public void hideErrorScreen() {mErrorView.setVisibility(View.GONE);}
+    public void showNewsFeed() {
+        mErrorView.setVisibility(View.GONE);
+        mMainContent.setVisibility(View.VISIBLE);
+    }
+    public void showErrorScreen() {
+        mMainContent.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+    }
 
     public interface ArticleCallback {
         void onSuccess(List<Article> articles);
@@ -227,7 +230,6 @@ public class MainActivity extends AppCompatActivity
                     List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
                     Log.d(LOG_TAG, "Got response back");
                     mSwipeRefreshLayout.setRefreshing(false);
-                    hideErrorScreen();
                     showNewsFeed();
 
                     articleCallback.onSuccess(cleanedResponse);
@@ -235,7 +237,6 @@ public class MainActivity extends AppCompatActivity
                     // TODO: 10/28/17 Show visual issue here
                     Log.e(LOG_TAG, "api response body is null");
                     mSwipeRefreshLayout.setRefreshing(false);
-                    hideNewsFeed();
                     showErrorScreen();
 
                     articleCallback.onFailure();
@@ -252,7 +253,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void resetArticles() {
-        hideNewsFeed();
+//        showNewsFeed();
         mArticleAdapter.setDataSet(new ArrayList<Article>());
         mArticleAdapter.notifyDataSetChanged();
         addArticles(1);
@@ -300,9 +301,27 @@ public class MainActivity extends AppCompatActivity
 
     private void showFullArticle(Article targetArticle) {
 
+        // These attributes might be null or missing
+        String authorBio = "";
         String authorName = "";
-        if(targetArticle.guestAuthor != null && targetArticle.guestAuthor.name != null)
-            authorName = targetArticle.guestAuthor.name;
+        String authorImgUrl = "";
+        if(targetArticle.guestAuthor != null) {
+
+            GuestAuthor gAuthor = targetArticle.guestAuthor;
+
+            if(gAuthor.name != null) {
+                authorName = targetArticle.guestAuthor.name;
+            }
+
+            if(!MacWeeklyUtils.isTextEmpty(gAuthor.imgUrl)) {
+                authorImgUrl = gAuthor.imgUrl;
+            }
+
+            if(!MacWeeklyUtils.isTextEmpty(gAuthor.bio)){
+                authorBio = gAuthor.bio;
+            }
+        }
+
 
         Intent articleIntent = new Intent(this, ArticleActivity.class);
         articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, "Author name here");
@@ -312,6 +331,9 @@ public class MainActivity extends AppCompatActivity
         articleIntent.putExtra(ArticleActivity.ARTICLE_TITLE_KEY, targetArticle.title.rendered);
         articleIntent.putExtra(ArticleActivity.ARTICLE_AUTHOR_KEY, authorName);
         articleIntent.putExtra(ArticleActivity.ARTICLE_LINK_KEY, targetArticle.link);
+        articleIntent.putExtra(ArticleActivity.AUTHOR_IMG_URL_KEY, authorImgUrl);
+        articleIntent.putExtra(ArticleActivity.AUTHOR_BIO_KEY, authorBio);
+
         startActivity(articleIntent);
     }
 }
