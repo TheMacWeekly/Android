@@ -19,11 +19,11 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:cropToPadding="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/app_icon_512_transparent"
+        android:src="@drawable/tmw_svg"
         app:srcCompat="@drawable/home_icon"
         android:layout_marginTop="8dp"/>
 

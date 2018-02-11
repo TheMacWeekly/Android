@@ -45,22 +45,23 @@
 
             <ImageView
                 android:id="@+id/errorIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/error_icon" />
 
             <TextView
+                style="@style/errorTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="28dp"
                 android:text="@string/oh_no"
-                android:textAlignment="center"
-                style="@style/errorTitle"/>
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/errorMessage"
+                style="@style/errorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -68,8 +69,7 @@
                 android:paddingLeft="36dp"
                 android:paddingRight="36dp"
                 android:text="@string/network_connection_issue"
-                android:textAlignment="center"
-                style="@style/errorText"/>
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/errorButton"
