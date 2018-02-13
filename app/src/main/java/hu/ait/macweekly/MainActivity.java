@@ -38,10 +38,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ArticleViewClickListener {
 
+    boolean showingNewsFeed = false;
+
     // Constants
     private final String LOG_TAG = "MainActivity - ";
 
-    private final int ARTICLES_PER_CALL = 25;
+    private final int ARTICLES_PER_CALL = 10;
 
     // Members
     private NewsAPI newsAPI;
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity
 
         prepareContentViews();
 
-        addArticles(1);
     }
 
     private void prepareContentViews() {
@@ -207,10 +208,12 @@ public class MainActivity extends AppCompatActivity
     public void showNewsFeed() {
         mErrorView.setVisibility(View.GONE);
         mMainContent.setVisibility(View.VISIBLE);
+        showingNewsFeed = true;
     }
     public void showErrorScreen() {
         mMainContent.setVisibility(View.GONE);
         mErrorView.setVisibility(View.VISIBLE);
+        showingNewsFeed = false;
     }
 
     public interface ArticleCallback {
@@ -230,7 +233,7 @@ public class MainActivity extends AppCompatActivity
                     List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
                     Log.d(LOG_TAG, "Got response back");
                     mSwipeRefreshLayout.setRefreshing(false);
-                    showNewsFeed();
+                    if(!showingNewsFeed) showNewsFeed();
 
                     articleCallback.onSuccess(cleanedResponse);
                 } else {
@@ -253,10 +256,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void resetArticles() {
-//        showNewsFeed();
+        mEndlessScrollListener.resetState();
         mArticleAdapter.setDataSet(new ArrayList<Article>());
         mArticleAdapter.notifyDataSetChanged();
-        addArticles(1);
     }
 
     private void addArticles(int pageNum) {
@@ -265,9 +267,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onSuccess(List<Article> articles) {
                 mArticleAdapter.addToDataSet(articles);
-                if (startSize > 0) {
-                    mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
-                }
+                mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
             }
 
             @Override

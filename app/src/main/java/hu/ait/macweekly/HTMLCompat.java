@@ -9,13 +9,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashSet;
 
 /**
  * Code from https://stackoverflow.com/questions/37904739/html-fromhtml-deprecated-in-android-n
@@ -65,10 +71,16 @@ public class HTMLCompat {
     private class ImageTagParser implements Html.TagHandler {
         @Override
         public void handleTag(boolean b, String s, Editable editable, XMLReader xmlReader) {
+            HashSet<String> figureTags = new HashSet<>();
+            String[] fTags = {"figcaption", "figure"};
+            for(String tag : fTags) figureTags.add(tag);
             if(!b && s.equals("img")) {
                 //Adds nice spacing after an image is found in html body
                 editable.append("\n\n");
             }
+//            else if(figureTags.contains(s)) { // TODO: 2/12/18 Get css figure tags 
+//                editable.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.white)), 0, Math.min(editable.length(), 30), 1);
+//            }
         }
     }
 
@@ -176,6 +188,7 @@ public class HTMLCompat {
             }
         }
     }
+
 }
 
 //            public BitmapDrawable getCentered(BitmapDrawable drawable, int maxWidth, int width, int height) {
@@ -200,3 +213,5 @@ public class HTMLCompat {
 //                return res;
 ////                return drawable;
 //            }
+
+
