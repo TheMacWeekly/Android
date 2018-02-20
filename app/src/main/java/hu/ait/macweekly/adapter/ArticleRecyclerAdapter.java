@@ -148,4 +148,8 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     public List<Article> getDataSet() {
         return mDataSet;
     }
+
+    public void clearDataSet() {
+        mDataSet.clear();
+    }
 }

@@ -1,7 +1,13 @@
 package hu.ait.macweekly;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ArticleViewClickListener {
 
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity
     // Constants
     private final String LOG_TAG = "MainActivity - ";
 
-    private final int ARTICLES_PER_CALL = 10;
+    private final int ARTICLES_PER_CALL = 25;
 
     // Members
     private NewsAPI newsAPI;
@@ -221,26 +228,27 @@ public class MainActivity extends AppCompatActivity
         void onFailure();
     }
 
-    private void callNewsAPI(int pageNum, final ArticleCallback articleCallback) {
+    private void callNewsAPI(final int pageNum, final ArticleCallback articleCallback) {
 
-        Call<List<Article>> articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
+        final Call<List<Article>> articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
+        Log.d(LOG_TAG, "Sent article api call ----------------");
         articleCall.enqueue(new Callback<List<Article>>() {
             @Override
             public void onResponse(Call<List<Article>> call, Response<List<Article>> response) {
 
+                mSwipeRefreshLayout.setRefreshing(false);
+
                 if (response.body() != null) {
+                    Log.d(LOG_TAG, "Got response back. Page: "+pageNum+" -----------------");
+
                     List<Article> uncleanedResponse = response.body();
                     List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
-                    Log.d(LOG_TAG, "Got response back");
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    if(!showingNewsFeed) showNewsFeed();
 
+                    if(!showingNewsFeed) showNewsFeed();
                     articleCallback.onSuccess(cleanedResponse);
+
                 } else {
-                    // TODO: 10/28/17 Show visual issue here
-                    Log.e(LOG_TAG, "api response body is null");
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    showErrorScreen();
+                    Log.e(LOG_TAG, "api response body is null. Page: "+pageNum);
 
                     articleCallback.onFailure();
                 }
@@ -248,17 +256,18 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<List<Article>> call, Throwable t) {
-                Log.e(LOG_TAG, "call failed");
+                Log.e(LOG_TAG, "call failed. Could not retrieve page. Page: "+pageNum);
                 mSwipeRefreshLayout.setRefreshing(false);
-                showErrorScreen();
+                articleCallback.onFailure();
             }
         });
     }
 
     private void resetArticles() {
-        mEndlessScrollListener.resetState();
-        mArticleAdapter.setDataSet(new ArrayList<Article>());
+        mArticleAdapter.clearDataSet();
         mArticleAdapter.notifyDataSetChanged();
+        showNewsFeed();
+        mEndlessScrollListener.resetState(mMainContent);
     }
 
     private void addArticles(int pageNum) {
@@ -266,13 +275,14 @@ public class MainActivity extends AppCompatActivity
         callNewsAPI(pageNum, new ArticleCallback() {
             @Override
             public void onSuccess(List<Article> articles) {
+                if(!showingNewsFeed) showNewsFeed();
                 mArticleAdapter.addToDataSet(articles);
                 mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
             }
 
             @Override
             public void onFailure() {
-                // TODO: 10/29/17 handle this
+                if(mArticleAdapter.getDataSet().size() == 0) showErrorScreen();
             }
         });
     }

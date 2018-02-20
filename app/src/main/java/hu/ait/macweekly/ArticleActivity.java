@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArticleActivity extends AppCompatActivity {
+public class ArticleActivity extends BaseActivity {
 
     // Keys
     public static final String ARTICLE_TITLE_KEY = "articleTitleKey";

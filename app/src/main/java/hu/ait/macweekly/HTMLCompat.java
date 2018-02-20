@@ -78,7 +78,7 @@ public class HTMLCompat {
                 //Adds nice spacing after an image is found in html body
                 editable.append("\n\n");
             }
-//            else if(figureTags.contains(s)) { // TODO: 2/12/18 Get css figure tags 
+//            else if(figureTags.contains(s)) { // TODO: 2/12/18 Get css figure tags
 //                editable.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.white)), 0, Math.min(editable.length(), 30), 1);
 //            }
         }
