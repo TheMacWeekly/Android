@@ -76,9 +76,19 @@ public class MainActivity extends BaseActivity
     }
 
     private void prepareContentViews() {
-        mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this);
-        mArticleAdapter.setDataSet(new ArrayList<Article>());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
+        mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
+                addArticles(page, categoryId, searchString);
+            }
+        };
+        EndlessRecyclerViewScrollListener.ParamManager paramManager = mEndlessScrollListener.getParamManager();
+
+        mArticleAdapter = new ArticleRecyclerAdapter(getApplicationContext(), this, paramManager);
+        mArticleAdapter.setDataSet(new ArrayList<Article>());
+
         mMainContent.setLayoutManager(linearLayoutManager);
         mMainContent.setAdapter(mArticleAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -95,12 +105,6 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
-                addArticles(page, categoryId, searchString);
-            }
-        };
         mMainContent.addOnScrollListener(mEndlessScrollListener);
 
         mButtonView.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +131,6 @@ public class MainActivity extends BaseActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-//        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); // TODO: 10/30/17 Turn this back on when feature finished
     }
 
     public void prepareNewsAPI() {
@@ -164,7 +167,7 @@ public class MainActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            resetArticlesWithSearch("Aarohi");
+            resetArticlesWithSearch("Suveer");
             return true;
         }else if (id == R.id.about_page) {
             goToAboutPage();
@@ -185,17 +188,22 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_search) {
+            resetArticlesWithSearch("Suveer");
+        } else if (id == R.id.nav_allStories) {
+            resetArticlesClear();
+        } else if (id == R.id.nav_news) {
+            resetArticlesWithCategory(3);
+        } else if (id == R.id.nav_sports) {
+            resetArticlesWithCategory(5);
+        } else if (id == R.id.nav_features) {
             resetArticlesWithCategory(4);
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_opinion) {
+            resetArticlesWithCategory(7);
+        } else if (id == R.id.nav_arts) {
+            resetArticlesWithCategory(6);
+        } else if (id == R.id.nav_foodDrink) {
+            resetArticlesWithCategory(28);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -221,20 +229,21 @@ public class MainActivity extends BaseActivity
 
     private void callNewsAPI(final int pageNum, int categoryId, String searchStr, final ArticleCallback articleCallback) {
         final Call<List<Article>> articleCall;
-        if(categoryId != EndlessRecyclerViewScrollListener.NO_CATEGORY // Here we build our articleCall based on what information is passed to us
-                && !searchStr.equals(EndlessRecyclerViewScrollListener.NO_SEARCH)) { // If we have category or search string, use those...
+
+        boolean hasCategory = categoryId != EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY;
+        boolean hasSearch = !searchStr.equals(EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
+
+        // Here we build our articleCall based on what information is passed to us
+        if(hasCategory && hasSearch) { // If we have category or search string, use those...
             articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, categoryId, searchStr);
-
-        } else if(categoryId != EndlessRecyclerViewScrollListener.NO_CATEGORY) {
+        } else if(hasCategory) {
             articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, categoryId);
-
-        } else if(!searchStr.equals(EndlessRecyclerViewScrollListener.NO_SEARCH)) {
+        } else if(hasSearch) {
             articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, searchStr);
-
         } else {
             articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
-
         }
+
         Log.d(LOG_TAG, "Sent article api call ----------------");
         articleCall.enqueue(new Callback<List<Article>>() {
             @Override
@@ -268,15 +277,15 @@ public class MainActivity extends BaseActivity
     }
 
     private void resetArticlesClear() {
-        resetArticles(EndlessRecyclerViewScrollListener.NO_CATEGORY, EndlessRecyclerViewScrollListener.NO_SEARCH);
+        resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
     }
 
     private void resetArticlesWithCategory(int categoryId) {
-        resetArticles(categoryId, EndlessRecyclerViewScrollListener.NO_SEARCH);
+        resetArticles(categoryId, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
     }
 
     private void resetArticlesWithSearch(String searchString) {
-        resetArticles(EndlessRecyclerViewScrollListener.NO_CATEGORY, searchString);
+        resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, searchString);
     }
 
     private void resetArticlesWithCatAndSearch(int categoryId, String searchString) {

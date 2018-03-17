@@ -3,27 +3,39 @@
 
     <item
         android:title="Search"
-        android:id="@+id/nav_send"
+        android:id="@+id/nav_search"
         android:icon="@drawable/ic_menu_send"/>
 
     <item android:title="Categories">
         <menu android:checkableBehavior="single">
             <item
-                android:id="@+id/nav_camera"
+                android:id="@+id/nav_allStories"
                 android:icon="@drawable/ic_menu_camera"
-                android:title="Art" />
+                android:title="All Stories" />
             <item
-                android:id="@+id/nav_gallery"
+                android:id="@+id/nav_news"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="News" />
+            <item
+                android:id="@+id/nav_sports"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="Gallery" />
+                android:title="Sports" />
             <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_features"
                 android:icon="@drawable/ic_menu_slideshow"
-                android:title="Slideshow" />
+                android:title="Features" />
             <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/nav_opinion"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="Tools" />
+                android:title="Opinion" />
+            <item
+                android:id="@+id/nav_arts"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Arts" />
+            <item
+                android:id="@+id/nav_foodDrink"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Food &amp; Drink" />
         </menu>
     </item>
 

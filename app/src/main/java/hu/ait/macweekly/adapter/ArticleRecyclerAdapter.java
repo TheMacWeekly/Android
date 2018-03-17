@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,6 +22,7 @@ import hu.ait.macweekly.MacWeeklyUtils;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.R;
 import hu.ait.macweekly.data.Article;
+import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 
 /**
  * Created by Mack on 7/4/2017.
@@ -33,11 +36,13 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     private List<Article> mDataSet;
     private Context mContext;
     private static ArticleViewClickListener mArticleClickListener;
+    private EndlessRecyclerViewScrollListener.ParamManager mParamManager;
 
-    public ArticleRecyclerAdapter (Context context, ArticleViewClickListener
-            articleClickListener) {
+    public ArticleRecyclerAdapter (Context context, ArticleViewClickListener articleClickListener,
+                                   EndlessRecyclerViewScrollListener.ParamManager paramManager) {
         this.mContext = context;
         this.mArticleClickListener = articleClickListener;
+        this.mParamManager = paramManager;
     }
 
     @Override
@@ -69,6 +74,15 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         if (position == 0) {
             //This position is reserved for the header. No work needs to be done here. This is
             //just for readability
+            HeaderViewHolder headerVH = (HeaderViewHolder) holder;
+
+            String headerText = "All Stories";
+            if(mParamManager.usingSearchStr()) {
+                headerText = "Search: "+mParamManager.getSearchStr();
+            } else if(mParamManager.usingCatId()) {
+                headerText = "Cateogry: "+mParamManager.getCatString(mParamManager.getCatId());
+            }
+            headerVH.headerText.setText(headerText);
         } else {
             ArticleViewHolder summaryViewHolder = (ArticleViewHolder) holder;
             Article article = mDataSet.get(position-1);
@@ -140,8 +154,11 @@ public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.header_text) TextView headerText;
+
         public HeaderViewHolder(View view) {
             super(view);
+            ButterKnife.bind(this, view);
         }
     }
 

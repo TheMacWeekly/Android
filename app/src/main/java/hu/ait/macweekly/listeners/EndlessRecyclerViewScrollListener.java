@@ -10,9 +10,6 @@ import android.support.v7.widget.RecyclerView;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
-    public static final String NO_SEARCH = "";
-    public static final int NO_CATEGORY = -1;
-
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 15;
@@ -25,16 +22,12 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // Sets the starting page index
     private int startingPageIndex = 0;
 
-
-    // Sets category
-    private int categoryId = NO_CATEGORY;
-    // Sets search
-    private String searchString = NO_SEARCH;
-
     private RecyclerView.LayoutManager mLayoutManager;
+    private ParamManager mParamManager;
 
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
+        this.mParamManager = new ParamManager();
     }
 
     public int getLastVisibleItem(int[] lastVisibleItemPositions) {
@@ -83,15 +76,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // threshold should reflect how many total columns there are too
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
-            onLoadMore(currentPage, totalItemCount, view, categoryId, searchString);
+            onLoadMore(currentPage, totalItemCount, view, mParamManager.getCatId(), mParamManager.getSearchStr());
             loading = true;
         }
     }
 
     // Call this method whenever performing new searches
     public void resetState(RecyclerView view, int categoryId, String searchString) {
-        this.categoryId = categoryId;
-        this.searchString = searchString;
+        this.mParamManager.setCatId(categoryId);
+        this.mParamManager.setSearchStr(searchString);
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
@@ -100,5 +93,59 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString);
+
+    public ParamManager getParamManager() {
+        return mParamManager;
+    }
+
+    /**
+     * This class is in charge of keeping track of what the current category or search parameters are.
+     * Stores a category id (Which could stand for no category) and a search string (Which could stand
+     * for no search param).
+     */
+    public class ParamManager {
+        public static final String NO_SEARCH = "";
+        public static final int NO_CATEGORY = -1;
+
+        int categoryId = NO_CATEGORY;
+        String searchStr = NO_SEARCH;
+
+        protected void setCatId(int catId) {
+            this.categoryId = catId;
+        }
+
+        public int getCatId() {return this.categoryId;}
+
+        public boolean usingCatId() {return this.categoryId != NO_CATEGORY;}
+
+        public String getCatString(int catId) {
+            switch(catId) {
+                case -1:
+                    return "All Stories";
+                case 3:
+                    return "News";
+                case 5:
+                    return "Sports";
+                case 4:
+                    return "Features";
+                case 7:
+                    return "Opinion";
+                case 6:
+                    return "Arts";
+                case 28:
+                    return "Food & Drink";
+                default:
+                    return "All Stories";
+            }
+        }
+
+        protected void setSearchStr(String searchStr) {
+            this.searchStr = searchStr;
+        }
+
+        public String getSearchStr() {return this.searchStr;}
+
+        public boolean usingSearchStr() {return !this.searchStr.equals(NO_SEARCH);}
+    }
 
 }
