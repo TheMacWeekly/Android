@@ -15,6 +15,7 @@
         <item name="android:textColorSecondary">@color/black</item>
 
         <item name="android:actionOverflowButtonStyle">@style/AppTheme.OverFlow</item>
+        <item name="drawerArrowStyle">@style/DrawerHamburgerStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -35,6 +36,11 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="DrawerHamburgerStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/black</item>
     </style>
 
     <style name="summaryTitle">

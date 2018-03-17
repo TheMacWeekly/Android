@@ -1,28 +1,21 @@
 package hu.ait.macweekly;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +67,7 @@ public class MainActivity extends BaseActivity
 
         prepareDrawer(toolbar);
 
-//        prepareNavView();
+        prepareNavView();
 
         prepareNewsAPI();
 
@@ -92,7 +85,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onRefresh() {
 //                callNewsAPI();
-                resetArticles();
+                resetArticlesClear();
             }
         });
         mSwipeRefreshLayout.post(new Runnable() { // TODO: 10/29/17 Need this?
@@ -104,8 +97,8 @@ public class MainActivity extends BaseActivity
 
         mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                addArticles(page);
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
+                addArticles(page, categoryId, searchString);
             }
         };
         mMainContent.addOnScrollListener(mEndlessScrollListener);
@@ -113,7 +106,7 @@ public class MainActivity extends BaseActivity
         mButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetArticles();
+                resetArticlesClear();
             }
         });
     }
@@ -130,11 +123,11 @@ public class MainActivity extends BaseActivity
 
     private void prepareDrawer(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.setDrawerListener(toggle);
-//        toggle.syncState();
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); // TODO: 10/30/17 Turn this back on when feature finished
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+//        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED); // TODO: 10/30/17 Turn this back on when feature finished
     }
 
     public void prepareNewsAPI() {
@@ -171,11 +164,10 @@ public class MainActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            resetArticles();
+            resetArticlesWithSearch("Aarohi");
             return true;
         }else if (id == R.id.about_page) {
             goToAboutPage();
-            resetArticles();
             return true;
         }
 
@@ -195,13 +187,12 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            resetArticlesWithCategory(4);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
@@ -228,9 +219,22 @@ public class MainActivity extends BaseActivity
         void onFailure();
     }
 
-    private void callNewsAPI(final int pageNum, final ArticleCallback articleCallback) {
+    private void callNewsAPI(final int pageNum, int categoryId, String searchStr, final ArticleCallback articleCallback) {
+        final Call<List<Article>> articleCall;
+        if(categoryId != EndlessRecyclerViewScrollListener.NO_CATEGORY // Here we build our articleCall based on what information is passed to us
+                && !searchStr.equals(EndlessRecyclerViewScrollListener.NO_SEARCH)) { // If we have category or search string, use those...
+            articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, categoryId, searchStr);
 
-        final Call<List<Article>> articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
+        } else if(categoryId != EndlessRecyclerViewScrollListener.NO_CATEGORY) {
+            articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, categoryId);
+
+        } else if(!searchStr.equals(EndlessRecyclerViewScrollListener.NO_SEARCH)) {
+            articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL, searchStr);
+
+        } else {
+            articleCall = newsAPI.getArticles(pageNum, ARTICLES_PER_CALL);
+
+        }
         Log.d(LOG_TAG, "Sent article api call ----------------");
         articleCall.enqueue(new Callback<List<Article>>() {
             @Override
@@ -263,28 +267,46 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    private void resetArticles() {
+    private void resetArticlesClear() {
+        resetArticles(EndlessRecyclerViewScrollListener.NO_CATEGORY, EndlessRecyclerViewScrollListener.NO_SEARCH);
+    }
+
+    private void resetArticlesWithCategory(int categoryId) {
+        resetArticles(categoryId, EndlessRecyclerViewScrollListener.NO_SEARCH);
+    }
+
+    private void resetArticlesWithSearch(String searchString) {
+        resetArticles(EndlessRecyclerViewScrollListener.NO_CATEGORY, searchString);
+    }
+
+    private void resetArticlesWithCatAndSearch(int categoryId, String searchString) {
+        resetArticles(categoryId, searchString);
+    }
+
+    private void resetArticles(int categoryId, String searchString) {
         mArticleAdapter.clearDataSet();
         mArticleAdapter.notifyDataSetChanged();
         showNewsFeed();
-        mEndlessScrollListener.resetState(mMainContent);
+        mEndlessScrollListener.resetState(mMainContent, categoryId, searchString);
     }
 
-    private void addArticles(int pageNum) {
+    private void addArticles(int pageNum, int categoryId, String searchString) {
         final int startSize = mArticleAdapter.getItemCount();
-        callNewsAPI(pageNum, new ArticleCallback() {
+        ArticleCallback articleCallback = new ArticleCallback() {
             @Override
             public void onSuccess(List<Article> articles) {
-                if(!showingNewsFeed) showNewsFeed();
+                if (!showingNewsFeed) showNewsFeed();
                 mArticleAdapter.addToDataSet(articles);
                 mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
             }
 
             @Override
             public void onFailure() {
-                if(mArticleAdapter.getDataSet().size() == 0) showErrorScreen();
+                if (mArticleAdapter.getDataSet().size() == 0) showErrorScreen();
             }
-        });
+        };
+
+        callNewsAPI(pageNum, categoryId, searchString, articleCallback);
     }
 
     private List<Article> cleanResponse(List<Article> uncleanedResponse) {
