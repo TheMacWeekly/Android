@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/nav_allStories"
+        android:icon="@drawable/home"
+        android:title="All Stories" />
     <item
         android:title="Search"
         android:id="@+id/nav_search"
-        android:icon="@drawable/ic_menu_send"/>
+        android:icon="@drawable/search"/>
 
     <item android:title="Categories">
         <menu android:checkableBehavior="single">
             <item
-                android:id="@+id/nav_allStories"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="All Stories" />
-            <item
                 android:id="@+id/nav_news"
-                android:icon="@drawable/ic_menu_camera"
+                android:icon="@drawable/newspaper"
                 android:title="News" />
             <item
                 android:id="@+id/nav_sports"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/basketball"
                 android:title="Sports" />
             <item
                 android:id="@+id/nav_features"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@drawable/star_circle"
                 android:title="Features" />
             <item
                 android:id="@+id/nav_opinion"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/thought_bubble"
                 android:title="Opinion" />
             <item
                 android:id="@+id/nav_arts"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/brush"
                 android:title="Arts" />
             <item
                 android:id="@+id/nav_foodDrink"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/food"
                 android:title="Food &amp; Drink" />
         </menu>
     </item>
