@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class MainActivity extends BaseActivity
         prepareNewsAPI();
 
         prepareContentViews();
+
+        onBannerPressedScrollUp();
 
     }
 
@@ -136,6 +139,17 @@ public class MainActivity extends BaseActivity
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         newsAPI = retrofit.create(NewsAPI.class);
+    }
+
+    public void onBannerPressedScrollUp() {
+        ImageView bannerImg = (ImageView) findViewById(R.id.banner_logo);
+        bannerImg.setClickable(true);
+        bannerImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainContent.smoothScrollToPosition(0);
+            }
+        });
     }
 
     @Override
