@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
     // Views
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.errorButton) Button mButtonView;
+    @BindView(R.id.errorButton) Button mErrorButtonView;
 
     // Code
     @Override
@@ -60,6 +61,7 @@ public class MainActivity extends MacWeeklyApiActivity
         prepareNewsAPI();
 
         prepareContentViews();
+
     }
 
     private void prepareContentViews() {
@@ -94,10 +96,11 @@ public class MainActivity extends MacWeeklyApiActivity
 
         mMainContent.addOnScrollListener(mEndlessScrollListener);
 
-        mButtonView.setOnClickListener(new View.OnClickListener() {
+        mErrorButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetArticlesClear();
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -119,6 +122,18 @@ public class MainActivity extends MacWeeklyApiActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
     }
+
+    // TODO: 3/31/18 Fix this! banner logo does not exist
+//    public void onBannerPressedScrollUp() {
+//        ImageView bannerImg = (ImageView) findViewById(R.id.banner_logo);
+//        bannerImg.setClickable(true);
+//        bannerImg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mMainContent.smoothScrollToPosition(0);
+//            }
+//        });
+//    }
 
     @Override
     public void onBackPressed() {

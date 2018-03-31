@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
     // Views
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.search_field) EditText mSearchField;
+    @BindView(R.id.errorButton) Button mErrorButtonView;
 
     // Code
     @Override
@@ -110,6 +112,14 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
                 return true;
             }
         };
+
+        mErrorButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetArticlesWithSearch(searchQuery);
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
 
         mSearchField.setOnEditorActionListener(editListener);
 
