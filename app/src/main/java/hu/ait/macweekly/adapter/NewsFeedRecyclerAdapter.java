@@ -28,17 +28,17 @@ import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
  * Created by Mack on 7/4/2017.
  */
 
-public class ArticleRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
-        .ViewHolder>{
+public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
+        .ViewHolder> {
 
-    private static String LOG_TAG = "NEWSFEEDADAPTER";
+    private static String LOG_TAG = "NEWSFEED_ADAPTER - ";
 
     private List<Article> mDataSet;
     private Context mContext;
     private static ArticleViewClickListener mArticleClickListener;
     private EndlessRecyclerViewScrollListener.ParamManager mParamManager;
 
-    public ArticleRecyclerAdapter (Context context, ArticleViewClickListener articleClickListener,
+    public NewsFeedRecyclerAdapter(Context context, ArticleViewClickListener articleClickListener,
                                    EndlessRecyclerViewScrollListener.ParamManager paramManager) {
         this.mContext = context;
         this.mArticleClickListener = articleClickListener;

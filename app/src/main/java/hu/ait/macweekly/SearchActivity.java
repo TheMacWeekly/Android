@@ -1,48 +1,46 @@
 package hu.ait.macweekly;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import hu.ait.macweekly.adapter.NewsFeedRecyclerAdapter;
+import hu.ait.macweekly.adapter.SearchRecyclerAdapter;
 import hu.ait.macweekly.data.Article;
 import hu.ait.macweekly.data.GuestAuthor;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 
-public class MainActivity extends MacWeeklyApiActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        ArticleViewClickListener {
+public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewClickListener {
 
     boolean showingNewsFeed = false;
+    String searchQuery = "";
 
     // Constants
-    private final String LOG_TAG = "MainActivity - ";
+    private final String LOG_TAG = "SearchActivity - ";
 
     // Members
-    private NewsFeedRecyclerAdapter mArticleAdapter;
+    private SearchRecyclerAdapter mArticleAdapter;
     private EndlessRecyclerViewScrollListener mEndlessScrollListener;
 
     // Views
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.errorButton) Button mButtonView;
+    @BindView(R.id.search_field) EditText mSearchField;
 
     // Code
     @Override
@@ -53,13 +51,11 @@ public class MainActivity extends MacWeeklyApiActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        prepareDrawer(toolbar);
-
-        prepareNavView();
-
         prepareNewsAPI();
 
         prepareContentViews();
+
+        setUpBackButton();
     }
 
     private void prepareContentViews() {
@@ -73,7 +69,7 @@ public class MainActivity extends MacWeeklyApiActivity
         };
         EndlessRecyclerViewScrollListener.ParamManager paramManager = mEndlessScrollListener.getParamManager();
 
-        mArticleAdapter = new NewsFeedRecyclerAdapter(getApplicationContext(), this, paramManager);
+        mArticleAdapter = new SearchRecyclerAdapter(getApplicationContext(), this, paramManager);
         mArticleAdapter.setDataSet(new ArrayList<Article>());
 
         mMainContent.setLayoutManager(linearLayoutManager);
@@ -81,134 +77,76 @@ public class MainActivity extends MacWeeklyApiActivity
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                callNewsAPI();
-                resetArticlesClear();
-            }
-        });
-        mSwipeRefreshLayout.post(new Runnable() { // TODO: 10/29/17 Need this?
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
+                resetArticlesWithSearch(searchQuery);
             }
         });
 
         mMainContent.addOnScrollListener(mEndlessScrollListener);
 
-        mButtonView.setOnClickListener(new View.OnClickListener() {
+        // Setting up search view
+        TextView.OnEditorActionListener editListener = new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                resetArticlesClear();
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                // If the enter key was hit
+                // Note: There might be an error here. Not sure if this is the enter button for all
+                //       devices... I think it is, but if there is a bug with search enter key check here
+                if (i == EditorInfo.IME_ACTION_DONE ||
+                        (keyEvent != null && keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)) {
+
+                    closeKeyboard();
+
+                    searchQuery = "";
+                    if(mSearchField.getText() != null) searchQuery = mSearchField.getText().toString();
+
+                    // If the search is valid
+                    if(isValidSearchQuery(searchQuery)) {
+                        resetArticlesWithSearch(searchQuery);
+                    } else {
+                        Log.d(LOG_TAG, "Search input with only spaces or empty is invalid");
+                        showScreenHint(SC_STARTSEARCH);
+                    }
+                }
+                return true;
             }
-        });
+        };
+
+        mSearchField.setOnEditorActionListener(editListener);
+
+        showScreenHint(SC_STARTSEARCH);
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private boolean isValidSearchQuery(String query) {
+        if(query == null) return false;
+
+        String noWhiteSpace = query.replaceAll("\\s+","");
+        return !MacWeeklyUtils.isTextEmpty(noWhiteSpace);
     }
 
     private void initContentViews() {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         ButterKnife.bind(this);
     }
 
-    private void prepareNavView() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void prepareDrawer(Toolbar toolbar) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            resetArticlesClear();
-            return true;
-        }else if (id == R.id.about_page) {
-            goToAboutPage();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void goToAboutPage() {
-        Intent aboutPageIntent = new Intent(this, AboutPage.class);
-        startActivity(aboutPageIntent);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_search) {
-            startSearchActivity();
-        } else if (id == R.id.nav_allStories) { // TODO: 3/31/18 Find better way than hardcoding this
-            resetArticlesClear();
-        } else if (id == R.id.nav_news) {
-            resetArticlesWithCategory(3);
-        } else if (id == R.id.nav_sports) {
-            resetArticlesWithCategory(5);
-        } else if (id == R.id.nav_features) {
-            resetArticlesWithCategory(4);
-        } else if (id == R.id.nav_opinion) {
-            resetArticlesWithCategory(7);
-        } else if (id == R.id.nav_arts) {
-            resetArticlesWithCategory(6);
-        } else if (id == R.id.nav_foodDrink) {
-            resetArticlesWithCategory(28);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void startSearchActivity() {
-        Intent searchActivity = new Intent(this, SearchActivity.class);
-        startActivity(searchActivity);
-    }
-
-    private void resetArticlesClear() {
-        resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
-    }
-
-    private void resetArticlesWithCategory(int categoryId) {
-        resetArticles(categoryId, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
-    }
-
     private void resetArticlesWithSearch(String searchString) {
-        resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, searchString);
-    }
-
-    private void resetArticlesWithCatAndSearch(int categoryId, String searchString) {
-        resetArticles(categoryId, searchString);
+        if(isValidSearchQuery(searchString)) {
+            resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, searchString);
+        } else {
+            Log.d(LOG_TAG, "Search input with only spaces or empty is invalid");
+            showScreenHint(SC_STARTSEARCH);
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private void resetArticles(int categoryId, String searchString) {
@@ -216,6 +154,7 @@ public class MainActivity extends MacWeeklyApiActivity
         mArticleAdapter.notifyDataSetChanged();
         showScreenHint(SC_MAINCONTENT);
         mEndlessScrollListener.resetState(mMainContent, categoryId, searchString);
+        mEndlessScrollListener.startListener(mMainContent);
     }
 
     private void addArticles(int pageNum, int categoryId, String searchString) {
@@ -223,13 +162,14 @@ public class MainActivity extends MacWeeklyApiActivity
         MacWeeklyApiActivity.ArticleCallback articleCallback = new MacWeeklyApiActivity.ArticleCallback() {
             @Override
             public void onSuccess(List<Article> articles) {
+                if (!showingNewsFeed) showScreenHint(SC_MAINCONTENT);
                 mArticleAdapter.addToDataSet(articles);
                 mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
             }
 
             @Override
             public void onFailure() {
-
+                if (mArticleAdapter.getDataSet().size() == 0) showScreenHint(SC_ERROR);
             }
         };
         callNewsAPI(pageNum, categoryId, searchString, articleCallback);
@@ -247,12 +187,11 @@ public class MainActivity extends MacWeeklyApiActivity
 
     @Override
     void onResponseSuccessEmptyBody(int pageNum) {
-
+        if(mArticleAdapter.getItemCount() == 0) showScreenHint(SC_NORESULT);
     }
 
     @Override
     void onResponseFailure(int pageNum) {
-        if (mArticleAdapter.getDataSet().size() == 0) showScreenHint(SC_ERROR);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 

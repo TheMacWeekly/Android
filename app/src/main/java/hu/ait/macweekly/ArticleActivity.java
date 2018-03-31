@@ -1,8 +1,11 @@
 package hu.ait.macweekly;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +62,8 @@ public class ArticleActivity extends BaseActivity {
         populateDataMembers();
 
         bindArticleViews();
+
+        setUpBackButton();
     }
 
     @Override

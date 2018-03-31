@@ -14,74 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/main_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-        </android.support.v7.widget.RecyclerView>
+        <include layout="@layout/main_content" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <!--Error screen-->
-    <LinearLayout
-        android:id="@+id/newsFeedErrorView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <include layout="@layout/screenhint_network_error" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5" />
+    <!--No results-->
+    <include layout="@layout/screenhint_no_search_results" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/errorIcon"
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/error_icon" />
-
-            <TextView
-                style="@style/errorTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="28dp"
-                android:text="@string/oh_no"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/errorMessage"
-                style="@style/errorText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:paddingLeft="36dp"
-                android:paddingRight="36dp"
-                android:text="@string/network_connection_issue"
-                android:textAlignment="center" />
-
-            <Button
-                android:id="@+id/errorButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="@string/retry" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+    <!--Start search-->
+    <include layout="@layout/screenhint_start_search" />
 
 </RelativeLayout>

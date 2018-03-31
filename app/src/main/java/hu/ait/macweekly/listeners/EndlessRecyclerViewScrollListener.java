@@ -18,7 +18,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // The total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
     // True if we are still waiting for the last set of data to load.
-    private boolean loading = true;
+    private boolean loading = false;
     // Sets the starting page index
     private int startingPageIndex = 0;
 
@@ -88,6 +88,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
+        onScrolled(view, 0, 0);
+    }
+
+    // For some classes this needs to be called every time you reset the news/search feed. If your
+    // feed already comes with 1 or more items in it, like the news feed with the header view, then
+    // you don't need to call this. Otherwise if you are just loading only a list of items from the api,
+    // like with search, you need to call this on every reset/restart.
+    public void startListener(RecyclerView view) {
+        this.loading = false;
         onScrolled(view, 0, 0);
     }
 

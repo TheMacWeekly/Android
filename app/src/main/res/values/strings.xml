@@ -126,4 +126,12 @@
     <string name="version_stub">Version </string>
     <string name="share_article">Share</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_instructions">To search by title or content type in the search bar and press enter</string>
+    <string name="search">Search</string>
+    <string name="no_results_explanation">It might help to try with different keywords</string>
+    <string name="no_results">No results</string>
+    <string name="search_articles_hint">Search articles...</string>
+
 </resources>
