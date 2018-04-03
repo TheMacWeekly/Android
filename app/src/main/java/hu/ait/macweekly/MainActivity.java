@@ -1,6 +1,7 @@
 package hu.ait.macweekly;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +163,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
+            mSwipeRefreshLayout.setRefreshing(true);
             resetArticlesClear();
             return true;
         }else if (id == R.id.about_page) {

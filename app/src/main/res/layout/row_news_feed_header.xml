@@ -15,4 +15,11 @@
         android:paddingBottom="8dp"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@color/black"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"/>
+
 </LinearLayout>

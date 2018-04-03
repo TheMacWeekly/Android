@@ -35,7 +35,7 @@ public abstract class MacWeeklyApiActivity extends BaseActivity {
 
     // Constants
     private final String LOG_TAG = "MacWeeklyAPIActivity - ";
-    protected final int ARTICLES_PER_CALL = 25;
+    public static final int ARTICLES_PER_CALL = 25;
 
     // Keys
     protected final static int SC_MAINCONTENT = -1;

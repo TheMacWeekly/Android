@@ -2,7 +2,6 @@ package hu.ait.macweekly.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.article_list_item,
+        View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_article_view,
                 parent, false);
         ArticleViewHolder articleViewHolder = new ArticleViewHolder(articleView);
         return articleViewHolder;

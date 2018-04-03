@@ -11,13 +11,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hu.ait.macweekly.HTMLCompat;
+import hu.ait.macweekly.MacWeeklyApiActivity;
 import hu.ait.macweekly.MacWeeklyUtils;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.R;
@@ -37,6 +36,7 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     private Context mContext;
     private static ArticleViewClickListener mArticleClickListener;
     private EndlessRecyclerViewScrollListener.ParamManager mParamManager;
+    private boolean hasHero = false; // For starters, we don't know if we have a featured/hero article
 
     public NewsFeedRecyclerAdapter(Context context, ArticleViewClickListener articleClickListener,
                                    EndlessRecyclerViewScrollListener.ParamManager paramManager) {
@@ -49,15 +49,20 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch(viewType) {
             case 0:
-                View headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_feed_header,
+                View headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_news_feed_header,
                         parent, false);
                 HeaderViewHolder headerViewHolder = new HeaderViewHolder(headerView);
                 return headerViewHolder;
             case 1:
-                View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.article_list_item,
+                View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_article_view,
                         parent, false);
                 ArticleViewHolder articleViewHolder = new ArticleViewHolder(articleView);
                 return articleViewHolder;
+            case 2:
+                View heroView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_hero_view,
+                        parent, false);
+                ArticleViewHolder heroViewHolder = new ArticleViewHolder(heroView);
+                return heroViewHolder;
             default:
                 Log.e(LOG_TAG, "Invalid viewholder in onCreateViewHolder for newsfeed adapter");
                 return null; //If it gets here, not good.
@@ -66,7 +71,9 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? 0 : 1;
+        if(position == 0) return 0;
+        else if(position == 1 && hasHero) return 2;
+        return 1;
     }
 
     @Override
@@ -80,7 +87,7 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
             if(mParamManager.usingSearchStr()) {
                 headerText = "Search: "+mParamManager.getSearchStr();
             } else if(mParamManager.usingCatId()) {
-                headerText = "Cateogry: "+mParamManager.getCatString(mParamManager.getCatId());
+                headerText = "Category: "+mParamManager.getCatString(mParamManager.getCatId());
             }
             headerVH.headerText.setText(headerText);
         } else {
@@ -106,7 +113,13 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
             // Load image thumbnail if url exists
             if(!MacWeeklyUtils.isTextEmpty(article.normalThumbnailUrl)) {
-                String fullImgUrl = article.normalThumbnailUrl;
+                // Check if this is the hero view. If it is we need a larger res image
+                String fullImgUrl;
+                if(position == 1 && hasHero) {
+                    fullImgUrl = article.fullThumbnailUrl;
+                } else {
+                    fullImgUrl = article.normalThumbnailUrl;
+                }
                 Glide.with(mContext).load(fullImgUrl).into(summaryViewHolder.thumbnailView);
                 summaryViewHolder.thumbnailView.setVisibility(View.VISIBLE);
             } else {
@@ -129,7 +142,30 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     public void addToDataSet(List<Article> newArticles) {
         int oldIndexEnd = mDataSet.size() - 1;
         mDataSet.addAll(newArticles);
+        checkForHeroViewSwap();
         notifyItemRangeChanged(oldIndexEnd, mDataSet.size());
+    }
+
+    private void checkForHeroViewSwap() {
+        // If dataset size currently is less than ARTICLES_PER_CAL that means this is the first call. We only want
+        // to swap for hero view on first api call. If this is true, then look through list and find
+        // first article that has category home, since that means featured. Then move its position up
+        // to the top of the list, and everything it was above moves down one
+        if(mDataSet != null && mDataSet.size() < MacWeeklyApiActivity.ARTICLES_PER_CALL) {
+            // Then we can perform a search for a hero view choice
+            for(int i = 0; i < mDataSet.size(); i++) {
+                Article article = mDataSet.get(i);
+
+                if(i > 0 && article != null && article.categories != null && article.categories.contains(5271)) {
+                    // We found a hero article here
+                    hasHero = true;
+
+                    mDataSet.add(0, mDataSet.remove(i));
+
+                    break; // We found 1 hero view, don't find any more
+                }
+            }
+        }
     }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder

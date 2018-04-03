@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="32dp"
                 android:drawableLeft="@drawable/search_icon"
-                android:hint="@string/search_articles_hint"
+                android:hint=" Search articles..."
                 android:inputType="text"
                 android:maxLines="1"
                 android:scrollHorizontally="true"

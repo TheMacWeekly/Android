@@ -7,6 +7,7 @@ import android.content.Intent;
 public class ConnectivityIssueReceiver extends BroadcastReceiver {
     BaseActivity baseActivity;
 
+    public ConnectivityIssueReceiver() {}
 
     public ConnectivityIssueReceiver(BaseActivity baseActivity) {
         this.baseActivity = baseActivity;
