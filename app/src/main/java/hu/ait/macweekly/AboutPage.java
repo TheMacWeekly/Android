@@ -22,6 +22,6 @@ public class AboutPage extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        version.setText(getString(R.string.version_stub) + VERSION);
+        version.setText(getString(R.string.version_stub)  + " " + VERSION);
     }
 }

@@ -7,7 +7,7 @@ android {
         applicationId "hu.ait.macweekly"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 10
+        versionCode 11
         versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
