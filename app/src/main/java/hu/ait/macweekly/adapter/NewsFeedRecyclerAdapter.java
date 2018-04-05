@@ -151,7 +151,7 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         // to swap for hero view on first api call. If this is true, then look through list and find
         // first article that has category home, since that means featured. Then move its position up
         // to the top of the list, and everything it was above moves down one
-        if(mDataSet != null && mDataSet.size() < MacWeeklyApiActivity.ARTICLES_PER_CALL) {
+        if(mDataSet != null && mDataSet.size() <= MacWeeklyApiActivity.ARTICLES_PER_CALL) {
             // Then we can perform a search for a hero view choice
             for(int i = 0; i < mDataSet.size(); i++) {
                 Article article = mDataSet.get(i);

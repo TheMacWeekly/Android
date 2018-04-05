@@ -32,7 +32,7 @@
         android:id="@+id/versionNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Version 1.2"
+        android:text="Version 1.2.1"
         android:textAlignment="center"/>
 
 </LinearLayout>

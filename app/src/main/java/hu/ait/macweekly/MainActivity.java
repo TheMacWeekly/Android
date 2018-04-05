@@ -86,23 +86,23 @@ public class MainActivity extends MacWeeklyApiActivity
             @Override
             public void onRefresh() {
 //                callNewsAPI();
-                resetArticlesClear();
+                resetArticlesKeepCategory();
             }
         });
-        mSwipeRefreshLayout.post(new Runnable() { // TODO: 10/29/17 Need this?
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
+//        mSwipeRefreshLayout.post(new Runnable() { // TODO: 10/29/17 Need this?
+//            @Override
+//            public void run() {
+//                mSwipeRefreshLayout.setRefreshing(true);
+//            }
+//        });
 
         mMainContent.addOnScrollListener(mEndlessScrollListener);
 
         mErrorButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetArticlesClear();
-                mSwipeRefreshLayout.setRefreshing(true);
+                resetArticlesKeepCategory();
+//                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -163,8 +163,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            resetArticlesClear();
+            resetArticlesKeepCategory();
             return true;
         }else if (id == R.id.about_page) {
             goToAboutPage();
@@ -217,6 +216,10 @@ public class MainActivity extends MacWeeklyApiActivity
         resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
     }
 
+    private void resetArticlesKeepCategory() {
+        resetArticles(mEndlessScrollListener.getParamManager().getCatId(), EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
+    }
+
     private void resetArticlesWithCategory(int categoryId) {
         resetArticles(categoryId, EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
     }
@@ -230,6 +233,7 @@ public class MainActivity extends MacWeeklyApiActivity
     }
 
     private void resetArticles(int categoryId, String searchString) {
+        mSwipeRefreshLayout.setRefreshing(true);
         mArticleAdapter.clearDataSet();
         mArticleAdapter.notifyDataSetChanged();
         showScreenHint(SC_MAINCONTENT);

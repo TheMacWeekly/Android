@@ -25,6 +25,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private RecyclerView.LayoutManager mLayoutManager;
     private ParamManager mParamManager;
 
+    // TODO: 4/5/18 Separate the category manager from the endless scroll listener. Very much needed
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
         this.mParamManager = new ParamManager();

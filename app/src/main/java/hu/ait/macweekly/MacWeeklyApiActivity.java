@@ -100,8 +100,7 @@ public abstract class MacWeeklyApiActivity extends BaseActivity {
                 if (response.body() != null && response.body().size() > 0) {
                     Log.d(LOG_TAG, "Got response back. Page: "+pageNum+" -----------------");
 
-                    List<Article> uncleanedResponse = response.body();
-                    List<Article> cleanedResponse = cleanResponse(uncleanedResponse);
+                    List<Article> cleanedResponse = response.body();
 
                     onResponseSuccess(pageNum, cleanedResponse);
 
@@ -122,8 +121,9 @@ public abstract class MacWeeklyApiActivity extends BaseActivity {
         });
     }
 
+    // TODO: 4/5/18 Might be able to get rid of this soon, depricated
     private List<Article> cleanResponse(List<Article> uncleanedResponse) {
-        int MIN_CHAR_COUNT_FOR_ARTICLE = 1200; // Articles with char count < this val likely only have a video or audio link which our app doesn't handle.
+        int MIN_CHAR_COUNT_FOR_ARTICLE = 1500; // Articles with char count < this val likely only have a video or audio link which our app doesn't handle.
         //TODO: This also means however that we aren't loading things like comics or single images.
         //Ultimately we want to be able to load videos or audio.
 
