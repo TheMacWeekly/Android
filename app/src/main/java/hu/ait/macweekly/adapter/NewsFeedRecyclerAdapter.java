@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,12 +39,16 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     private static ArticleViewClickListener mArticleClickListener;
     private EndlessRecyclerViewScrollListener.ParamManager mParamManager;
     private boolean hasHero = false; // For starters, we don't know if we have a featured/hero article
+    Set<String> mBlacklist = new HashSet<>(); // TODO: 4/6/18 Find a way to do better than a blacklist, or make this better designed
 
     public NewsFeedRecyclerAdapter(Context context, ArticleViewClickListener articleClickListener,
                                    EndlessRecyclerViewScrollListener.ParamManager paramManager) {
         this.mContext = context;
         this.mArticleClickListener = articleClickListener;
         this.mParamManager = paramManager;
+
+        // populate blacklist
+        mBlacklist.add("Kerr selected as student commencement speaker");
     }
 
     @Override
@@ -112,7 +118,7 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
             summaryViewHolder.author.setText(HTMLCompat.getInstance(mContext).fromHtml(authorName));
 
             // Load image thumbnail if url exists
-            if(!MacWeeklyUtils.isTextEmpty(article.normalThumbnailUrl)) {
+            if(!MacWeeklyUtils.isTextEmpty(article.normalThumbnailUrl) && !articleBlacklisted(article.title.rendered)) {
                 // Check if this is the hero view. If it is we need a larger res image
                 String fullImgUrl;
                 if(position == 1 && hasHero) {
@@ -127,6 +133,15 @@ public class NewsFeedRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
                 summaryViewHolder.thumbnailView.setVisibility(View.GONE);
             }
         }
+    }
+
+    // Returns true if for some reason the article tries to load a thumbnail when it really shouldn't. This is rare
+    // Generally has to do with mac weekly peeps setting thumbnails they shouldn't
+    private boolean articleBlacklisted(String title) {
+        if(mBlacklist.contains(title)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

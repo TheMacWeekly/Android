@@ -146,6 +146,7 @@ public class ArticleActivity extends BaseActivity {
     private String formatHtmlForMobile(String mContentData) {
 
         String cleanedContent = mContentData.replaceAll("]<a.*>\\d<\\/a>", ""); // Gets rid of the weird ]1 and ]2 etc tags the mac weekly puts under photos. DOESNT WORK
+        cleanedContent = cleanedContent.replaceAll("<iframe.*soundcloud.*<\\/iframe>", ""); // TODO: 4/6/18 add soundcloud support?
 
         return "<html>" +
         "    <head>" +
