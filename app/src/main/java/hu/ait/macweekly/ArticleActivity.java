@@ -177,9 +177,9 @@ public class ArticleActivity extends BaseActivity {
             sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
 
             if (isMailClientPresent()) {
-                startActivityForResult(Intent.createChooser(sendFeedbackIntent, "Send email using:"), SEND_EMAIL_REQUEST);
+                startActivityForResult(Intent.createChooser(sendFeedbackIntent, res.getString(R.string.email_app_chooser)), SEND_EMAIL_REQUEST);
             } else {
-                showAlertDialogue("Error: ", "Unable to find email application - click to dismiss.");
+                showAlertDialogue(res.getString(R.string.error_title), res.getString(R.string.no_email_app));
             }
         }
 
@@ -231,7 +231,8 @@ public class ArticleActivity extends BaseActivity {
                 }
 //                this.showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT); //calling showSnackbar at the end is causing a crash
             } else {
-                showAlertDialogue("Error: ", "Error sending email - click to dismiss.");
+                showAlertDialogue(getResources().getString(R.string.error_title),
+                        getResources().getString(R.string.email_not_sent));
             }
         }
     }
