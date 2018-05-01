@@ -196,7 +196,7 @@ public class ArticleActivity extends BaseActivity {
         StringBuilder writer = new StringBuilder();
 
         writer.append(String.format(res.getString(R.string.phone_manufacturer), Build.MANUFACTURER));
-        writer.append(System.getProperty("line.separator")); //TODO: line separators are not being added
+        writer.append(System.getProperty("line.separator"));
 
         writer.append(String.format(res.getString(R.string.phone_os), Build.VERSION.RELEASE));
         writer.append(System.getProperty("line.separator"));
