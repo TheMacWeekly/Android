@@ -1,11 +1,23 @@
 package hu.ait.macweekly;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ShareActionProvider;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -16,10 +28,20 @@ import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ArticleActivity extends BaseActivity {
+
+    //Constants
+    private final int SEND_EMAIL_REQUEST = 0;
 
     // Keys
     public static final String ARTICLE_TITLE_KEY = "articleTitleKey";
@@ -90,9 +112,129 @@ public class ArticleActivity extends BaseActivity {
             sendIntent.putExtra(Intent.EXTRA_TEXT, mLinkData);
             mShareActionProvider.setShareIntent(sendIntent);
             return true;
+        } else if (id == R.id.action_feedback) {
+            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Check that a mail client is present
+     */
+    private boolean isMailClientPresent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/html");
+        final PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, 0);
+
+        if(list.size() == 0)
+            return false;
+        else
+            return true;
+    }
+
+    /**
+     * Send email feedback
+     */
+    private void sendFeedback() {
+        final String[] recipients = {"sfritsch@macalester.edu"}; //TODO: Assign actual email destination(s)
+        long currentTime = System.currentTimeMillis();
+        Resources res = getResources();
+        String emailSubject = String.format(res.getString(R.string.feedback_email_subject), currentTime);
+
+        Intent sendFeedbackIntent = new Intent(Intent.ACTION_SEND); //We have to use ACTION_SEND to include a single attachment - via Android dev docs
+        sendFeedbackIntent.setType("text/plain");
+        sendFeedbackIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
+        sendFeedbackIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+
+        String phoneDesc;
+
+        FileOutputStream fos = null;
+        File reportInfoFile = null;
+        try {
+            reportInfoFile = new File(getFilesDir(), "tempReportFile.txt");
+            fos = openFileOutput("tempReportFile.txt", Context.MODE_PRIVATE);
+            String writerString = getPhoneDetailsString();
+            fos.write(writerString.getBytes());
+
+        } catch (IOException e) {
+            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+        } finally {
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Uri fileUri = FileProvider.getUriForFile(this,
+                "hu.ait.macweekly.fileprovider",
+                reportInfoFile);
+
+        if (fileUri != null) {
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
+            sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+            if (isMailClientPresent()) {
+                startActivityForResult(Intent.createChooser(sendFeedbackIntent, "Send email using:"), SEND_EMAIL_REQUEST);
+            } else {
+                showAlertDialogue("Error: ", "Unable to find email application - click to dismiss.");
+            }
+        } else {
+            showSnackbar("Error creating error report.", Snackbar.LENGTH_SHORT);
+        }
+
+    }
+
+    /**
+     * Format and return a string containing details about
+     * the user's phone
+     * @return
+     */
+    private String getPhoneDetailsString() {
+
+        Resources res = getResources();
+        StringBuilder writer = new StringBuilder();
+
+        writer.append(String.format(res.getString(R.string.phone_manufacturer), Build.MANUFACTURER));
+        writer.append(System.getProperty("line.separator")); //TODO: line separators are not being added
+
+        writer.append(String.format(res.getString(R.string.phone_os), Build.VERSION.RELEASE));
+        writer.append(System.getProperty("line.separator"));
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        writer.append(String.format(res.getString(R.string.phone_screen_resolution), displayMetrics.heightPixels, displayMetrics.widthPixels));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_model), Build.MODEL));
+
+        Log.e("writercontents", writer.toString());
+
+        return writer.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("Received result", "from email intent");
+        if (requestCode == SEND_EMAIL_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.e("Result code:", "is okay");
+//                BufferedWriter bw = null;
+                File tempData = new File(getFilesDir(), "tempReportFile.txt");
+                if (tempData.exists()) {
+                    tempData.delete();
+                }
+//                this.showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT); //calling showSnackbar at the end is causing a crash
+            } else {
+                showAlertDialogue("Error: ", "Error sending email - click to dismiss.");
+            }
+        }
     }
 
     private void bindArticleViews() {

@@ -1,9 +1,18 @@
 package hu.ait.macweekly;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,6 +20,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +30,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +54,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
     // Constants
     private final String LOG_TAG = "MainActivity - ";
+    private final int SEND_EMAIL_REQUEST = 0;
 
     // Members
     private NewsFeedRecyclerAdapter mArticleAdapter;
@@ -168,6 +185,8 @@ public class MainActivity extends MacWeeklyApiActivity
         }else if (id == R.id.about_page) {
             goToAboutPage();
             return true;
+        }else if (id == R.id.action_feedback) {
+            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);
@@ -176,6 +195,124 @@ public class MainActivity extends MacWeeklyApiActivity
     private void goToAboutPage() {
         Intent aboutPageIntent = new Intent(this, AboutPage.class);
         startActivity(aboutPageIntent);
+    }
+
+    /**
+     * Check that a mail client is present
+     */
+    private boolean isMailClientPresent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/html");
+        final PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, 0);
+
+        if(list.size() == 0)
+            return false;
+        else
+            return true;
+    }
+
+    /**
+     * Send email feedback
+     */
+    private void sendFeedback() {
+        final String[] recipients = {"sfritsch@macalester.edu"}; //TODO: Assign actual email destination(s)
+        long currentTime = System.currentTimeMillis();
+        Resources res = getResources();
+        String emailSubject = String.format(res.getString(R.string.feedback_email_subject), currentTime);
+
+        Intent sendFeedbackIntent = new Intent(Intent.ACTION_SEND); //We have to use ACTION_SEND to include a single attachment - via Android dev docs
+        sendFeedbackIntent.setType("text/plain");
+        sendFeedbackIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
+        sendFeedbackIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+
+        String phoneDesc;
+
+        FileOutputStream fos = null;
+        File reportInfoFile = null;
+        try {
+            reportInfoFile = new File(getFilesDir(), "tempReportFile.txt");
+            fos = openFileOutput("tempReportFile.txt", Context.MODE_PRIVATE);
+            String writerString = getPhoneDetailsString();
+            fos.write(writerString.getBytes());
+
+        } catch (IOException e) {
+            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+        } finally {
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Uri fileUri = FileProvider.getUriForFile(this,
+                "hu.ait.macweekly.fileprovider",
+                reportInfoFile);
+
+        if (fileUri != null) {
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            MainActivity.this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
+            sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+            if (isMailClientPresent()) {
+                startActivityForResult(Intent.createChooser(sendFeedbackIntent, "Send email using:"), SEND_EMAIL_REQUEST);
+            } else {
+                showAlertDialogue("Error: ", "Unable to find email application - click to dismiss.");
+            }
+        } else {
+            showSnackbar("Error creating report.", Snackbar.LENGTH_SHORT);
+        }
+
+    }
+
+    /**
+     * Format and return a string containing details about
+     * the user's phone
+     * @return
+     */
+    private String getPhoneDetailsString() {
+
+        Resources res = getResources();
+        StringBuilder writer = new StringBuilder();
+
+        writer.append(String.format(res.getString(R.string.phone_manufacturer), Build.MANUFACTURER));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_os), Build.VERSION.RELEASE));
+        writer.append(System.getProperty("line.separator"));
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        writer.append(String.format(res.getString(R.string.phone_screen_resolution), displayMetrics.heightPixels, displayMetrics.widthPixels));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_model), Build.MODEL));
+
+        Log.e("writercontents", writer.toString());
+
+        return writer.toString();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("Received result", "from email intent");
+        if (requestCode == SEND_EMAIL_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.e("Result code:", "is okay");
+                File tempData = new File(getFilesDir(), "tempReportFile.txt");
+                if (tempData.exists()) {
+                    tempData.delete();
+                }
+//                this.showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT); //calling showSnackbar at the end is causing a crash
+            } else {
+                showAlertDialogue("Error: ", "Error sending email - click to dismiss.");
+            }
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

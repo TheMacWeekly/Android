@@ -1,7 +1,9 @@
 package hu.ait.macweekly;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -69,6 +71,17 @@ public class BaseActivity extends AppCompatActivity {
 
     public void showSnackbar(String text, int duration) {
         Snackbar.make(rootLayout , text, duration).show();
+    }
+
+    public void showAlertDialogue(String title, String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        final boolean alertVal;
+
+        builder.setMessage(content).setTitle(title);
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
 
