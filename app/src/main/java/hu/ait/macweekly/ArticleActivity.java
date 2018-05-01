@@ -218,7 +218,7 @@ public class ArticleActivity extends BaseActivity {
         writer.append(String.format(res.getString(R.string.phone_hardware), Build.HARDWARE));
         writer.append(System.getProperty("line.separator"));
 
-        writer.append(String.format(res.getString(R.string.phone_hardware), Build.SERIAL));
+        writer.append(String.format(res.getString(R.string.phone_serial), Build.SERIAL));
         writer.append(System.getProperty("line.separator"));
 
         writer.append(String.format(res.getString(R.string.phone_tags), Build.TAGS));
