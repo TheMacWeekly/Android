@@ -15,9 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ShareActionProvider;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -30,10 +28,8 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -224,18 +220,13 @@ public class ArticleActivity extends BaseActivity {
         writer.append(String.format(res.getString(R.string.phone_tags), Build.TAGS));
         writer.append(System.getProperty("line.separator"));
 
-        Log.e("writercontents", writer.toString());
-
         return writer.toString();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("Received result", "from email intent");
         if (requestCode == SEND_EMAIL_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Log.e("Result code:", "is okay");
-//                BufferedWriter bw = null;
                 File tempData = new File(getFilesDir(), "tempReportFile.txt");
                 if (tempData.exists()) {
                     tempData.delete();
