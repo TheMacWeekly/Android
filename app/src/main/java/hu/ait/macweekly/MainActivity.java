@@ -233,7 +233,7 @@ public class MainActivity extends MacWeeklyApiActivity
             fos.write(writerString.getBytes());
 
         } catch (IOException e) {
-            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+//            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
         } finally {
             if (fos != null){
                 try {
@@ -259,8 +259,6 @@ public class MainActivity extends MacWeeklyApiActivity
             } else {
                 showAlertDialogue("Error: ", "Unable to find email application - click to dismiss.");
             }
-        } else {
-            showSnackbar("Error creating report.", Snackbar.LENGTH_SHORT);
         }
 
     }
