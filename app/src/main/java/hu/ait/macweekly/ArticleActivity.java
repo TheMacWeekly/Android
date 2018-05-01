@@ -155,7 +155,7 @@ public class ArticleActivity extends BaseActivity {
             fos.write(writerString.getBytes());
 
         } catch (IOException e) {
-            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+//            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
         } finally {
             if (fos != null){
                 try {
@@ -181,8 +181,6 @@ public class ArticleActivity extends BaseActivity {
             } else {
                 showAlertDialogue("Error: ", "Unable to find email application - click to dismiss.");
             }
-        } else {
-            showSnackbar("Error creating error report.", Snackbar.LENGTH_SHORT);
         }
 
     }
