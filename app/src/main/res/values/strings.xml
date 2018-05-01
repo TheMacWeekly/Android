@@ -134,6 +134,10 @@
     <string name ="phone_screen_resolution">Resolution: %1$d x %2$d </string>
     <string name ="phone_os">OS Version: %1$s </string>
     <string name ="phone_model">Model: %1$s </string>
+    <string name ="phone_hardware">Hardware: %1$s </string>
+    <string name="phone_serial">Serial #: %1$s</string>
+    <string name="phone_tags">Tags: %1$s</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -213,6 +213,16 @@ public class ArticleActivity extends BaseActivity {
         writer.append(System.getProperty("line.separator"));
 
         writer.append(String.format(res.getString(R.string.phone_model), Build.MODEL));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_hardware), Build.HARDWARE));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_hardware), Build.SERIAL));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_tags), Build.TAGS));
+        writer.append(System.getProperty("line.separator"));
 
         Log.e("writercontents", writer.toString());
 
