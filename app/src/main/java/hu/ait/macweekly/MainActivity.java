@@ -50,7 +50,6 @@ public class MainActivity extends MacWeeklyApiActivity
 
     // Constants
     private final String LOG_TAG = "MainActivity - ";
-    private final int SEND_EMAIL_REQUEST = 0;
 
     // Members
     private NewsFeedRecyclerAdapter mArticleAdapter;
@@ -191,129 +190,6 @@ public class MainActivity extends MacWeeklyApiActivity
     private void goToAboutPage() {
         Intent aboutPageIntent = new Intent(this, AboutPage.class);
         startActivity(aboutPageIntent);
-    }
-
-    /**
-     * Check that a mail client is present
-     */
-    private boolean isMailClientPresent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/html");
-        final PackageManager packageManager = getPackageManager();
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, 0);
-
-        if(list.size() == 0)
-            return false;
-        else
-            return true;
-    }
-
-    /**
-     * Send email feedback
-     */
-    private void sendFeedback() {
-        final String[] recipients = {"sfritsch@macalester.edu"}; //TODO: Assign actual email destination(s)
-        long currentTime = System.currentTimeMillis();
-        Resources res = getResources();
-        String emailSubject = String.format(res.getString(R.string.feedback_email_subject), currentTime);
-
-        Intent sendFeedbackIntent = new Intent(Intent.ACTION_SEND); //We have to use ACTION_SEND to include a single attachment - via Android dev docs
-        sendFeedbackIntent.setType("text/plain");
-        sendFeedbackIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        sendFeedbackIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
-
-        String phoneDesc;
-
-        FileOutputStream fos = null;
-        File reportInfoFile = null;
-        try {
-            reportInfoFile = new File(getFilesDir(), "tempReportFile.txt");
-            fos = openFileOutput("tempReportFile.txt", Context.MODE_PRIVATE);
-            String writerString = getPhoneDetailsString();
-            fos.write(writerString.getBytes());
-
-        } catch (IOException e) {
-//            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
-        } finally {
-            if (fos != null){
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        Uri fileUri = FileProvider.getUriForFile(this,
-                "hu.ait.macweekly.fileprovider",
-                reportInfoFile);
-
-        if (fileUri != null) {
-            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            MainActivity.this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
-            sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-
-            if (isMailClientPresent()) {
-                startActivityForResult(Intent.createChooser(sendFeedbackIntent, res.getString(R.string.email_app_chooser)), SEND_EMAIL_REQUEST);
-            } else {
-                showAlertDialogue(res.getString(R.string.error_title), res.getString(R.string.no_email_app));
-            }
-        }
-
-    }
-
-    /**
-     * Format and return a string containing details about
-     * the user's phone
-     * @return
-     */
-    private String getPhoneDetailsString() {
-
-        Resources res = getResources();
-        StringBuilder writer = new StringBuilder();
-
-        writer.append(String.format(res.getString(R.string.phone_manufacturer), Build.MANUFACTURER));
-        writer.append(System.getProperty("line.separator"));
-
-        writer.append(String.format(res.getString(R.string.phone_os), Build.VERSION.RELEASE));
-        writer.append(System.getProperty("line.separator"));
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        writer.append(String.format(res.getString(R.string.phone_screen_resolution), displayMetrics.heightPixels, displayMetrics.widthPixels));
-        writer.append(System.getProperty("line.separator"));
-
-        writer.append(String.format(res.getString(R.string.phone_model), Build.MODEL));
-        writer.append(System.getProperty("line.separator"));
-
-        writer.append(String.format(res.getString(R.string.phone_hardware), Build.HARDWARE));
-        writer.append(System.getProperty("line.separator"));
-
-        writer.append(String.format(res.getString(R.string.phone_serial), Build.SERIAL));
-        writer.append(System.getProperty("line.separator"));
-
-        writer.append(String.format(res.getString(R.string.phone_tags), Build.TAGS));
-        writer.append(System.getProperty("line.separator"));
-
-        return writer.toString();
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SEND_EMAIL_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                File tempData = new File(getFilesDir(), "tempReportFile.txt");
-                if (tempData.exists()) {
-                    tempData.delete();
-                }
-                this.showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT); //calling showSnackbar at the end is causing a crash
-            } else {
-                showAlertDialogue(getResources().getString(R.string.error_title),
-                        getResources().getString(R.string.email_not_sent));
-            }
-        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
