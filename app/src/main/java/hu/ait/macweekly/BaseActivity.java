@@ -56,6 +56,7 @@ public class BaseActivity extends AppCompatActivity {
         mBroadcastRec = new ConnectivityIssueReceiver(this);
 
         registerBroadcastReciever();
+
     }
 
     @Override
@@ -87,12 +88,17 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showSnackbar(String text, int duration) {
-        Snackbar.make(rootLayout , text, duration).show();
+        View parentView = findViewById(android.R.id.content);
+        Snackbar mSnackbar = Snackbar.make(parentView, text, duration);
+        View sbView = mSnackbar.getView();
+        TextView tv = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(Color.WHITE);
+        sbView.setBackgroundColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+        mSnackbar.show();
     }
 
     public void showAlertDialogue(String title, String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         final boolean alertVal;
 
         builder.setMessage(content).setTitle(title).setPositiveButton(R.string.confirm_email_failure, new DialogInterface.OnClickListener() {
@@ -165,10 +171,13 @@ public class BaseActivity extends AppCompatActivity {
         final PackageManager packageManager = getPackageManager();
         List<ResolveInfo> list = packageManager.queryIntentActivities(intent, 0);
 
-        if(list.size() == 0)
+        if (list.size() == 0) {
+            showSnackbar("No email applications found.", Snackbar.LENGTH_LONG);
             return false;
-        else
+        }
+        else {
             return true;
+        }
     }
 
     /**
@@ -196,7 +205,7 @@ public class BaseActivity extends AppCompatActivity {
             fos.write(writerString.getBytes());
 
         } catch (IOException e) {
-//            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
         } finally {
             if (fos != null){
                 try {
@@ -223,8 +232,6 @@ public class BaseActivity extends AppCompatActivity {
 
             if (isMailClientPresent()) {
                 startActivityForResult(Intent.createChooser(sendFeedbackIntent, res.getString(R.string.email_app_chooser)), SEND_EMAIL_REQUEST);
-            } else {
-                showAlertDialogue(res.getString(R.string.error_title), res.getString(R.string.no_email_app));
             }
         }
 
@@ -275,7 +282,7 @@ public class BaseActivity extends AppCompatActivity {
                 if (tempData.exists()) {
                     tempData.delete();
                 }
-//                this.showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT); //calling showSnackbar at the end is causing a crash
+                showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT);
             } else {
                 showAlertDialogue(getResources().getString(R.string.error_title),
                         getResources().getString(R.string.email_not_sent));
