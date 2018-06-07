@@ -130,11 +130,11 @@
     <string name="email_sent">Email sent successfully</string>
     <string name="unable_find_email_app">Unable to find email application</string>
 
-    <string name ="phone_manufacturer">Manufacturer: %1$s </string>
-    <string name ="phone_screen_resolution">Resolution: %1$d x %2$d </string>
-    <string name ="phone_os">OS Version: %1$s </string>
-    <string name ="phone_model">Model: %1$s </string>
-    <string name ="phone_hardware">Hardware: %1$s </string>
+    <string name="phone_manufacturer">Manufacturer: %1$s </string>
+    <string name="phone_screen_resolution">Resolution: %1$d x %2$d </string>
+    <string name="phone_os">OS Version: %1$s </string>
+    <string name="phone_model">Model: %1$s </string>
+    <string name="phone_hardware">Hardware: %1$s </string>
     <string name="phone_serial">Serial #: %1$s</string>
     <string name="phone_tags">Tags: %1$s</string>
     <string name="error_title">Error: </string>
@@ -153,5 +153,6 @@
     <string name="search_articles_hint"> Search articles...</string>
     <string name="version_pre_string">Version</string>
     <string name="the_mac_weekly">The Mac Weekly</string>
+    <string name="title_activity_push_test">PushTest</string>
 
 </resources>

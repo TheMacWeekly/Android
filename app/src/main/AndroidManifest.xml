@@ -6,12 +6,12 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/home_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/home_icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name" />
@@ -30,12 +30,16 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="@xml/filepaths" />
             </intent-filter>
         </activity>
@@ -57,17 +61,33 @@
             android:name=".SearchActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+
         <provider
-            android:authorities="hu.ait.macweekly.fileprovider"
             android:name="android.support.v4.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:authorities="hu.ait.macweekly.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <activity
+            android:name=".PushTest"
+            android:label="@string/title_activity_push_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name=".network.InstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".network.MessageReceiver">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

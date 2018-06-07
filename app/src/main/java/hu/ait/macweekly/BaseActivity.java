@@ -29,6 +29,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -234,6 +236,12 @@ public class BaseActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(sendFeedbackIntent, res.getString(R.string.email_app_chooser)), SEND_EMAIL_REQUEST);
             }
         }
+
+    }
+
+    public void sendPushNotification(String subject, String body) {
+        //TODO
+
 
     }
 
