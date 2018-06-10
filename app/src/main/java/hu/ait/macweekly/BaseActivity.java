@@ -239,12 +239,6 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void sendPushNotification(String subject, String body) {
-        //TODO
-
-
-    }
-
     /**
      * Format and return a string containing details about
      * the user's phone
