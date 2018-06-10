@@ -64,6 +64,8 @@ public class MainActivity extends MacWeeklyApiActivity
 
         prepareContentViews();
 
+        prepareScrollUp();
+
     }
 
     private void prepareContentViews() {
@@ -125,17 +127,16 @@ public class MainActivity extends MacWeeklyApiActivity
         toggle.syncState();
     }
 
-    // TODO: 3/31/18 Fix this! banner logo does not exist
-//    public void onBannerPressedScrollUp() {
-//        ImageView bannerImg = (ImageView) findViewById(R.id.banner_logo);
-//        bannerImg.setClickable(true);
-//        bannerImg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mMainContent.smoothScrollToPosition(0);
-//            }
-//        });
-//    }
+    public void prepareScrollUp() {
+        ImageView bannerImg = (ImageView) findViewById(R.id.banner_logo);
+        bannerImg.setClickable(true);
+        bannerImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainContent.smoothScrollToPosition(0);
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {
@@ -165,7 +166,7 @@ public class MainActivity extends MacWeeklyApiActivity
         if (id == R.id.action_refresh) {
             resetArticlesKeepCategory();
             return true;
-        }else if (id == R.id.about_page) {
+        } else if (id == R.id.about_page) {
             goToAboutPage();
             return true;
         }
