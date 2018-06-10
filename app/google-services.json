@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "203888960732",
-    "firebase_url": "https://macweekly-e8954.firebaseio.com",
-    "project_id": "macweekly-e8954",
-    "storage_bucket": "macweekly-e8954.appspot.com"
+    "project_number": "762024499034",
+    "firebase_url": "https://themacweekly-1525124850388.firebaseio.com",
+    "project_id": "themacweekly-1525124850388",
+    "storage_bucket": "themacweekly-1525124850388.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:203888960732:android:80834d3da2ed27fd",
+        "mobilesdk_app_id": "1:762024499034:android:80834d3da2ed27fd",
         "android_client_info": {
           "package_name": "hu.ait.macweekly"
         }
       },
       "oauth_client": [
         {
-          "client_id": "203888960732-ss4ssji8flhit7g49ec8h0dpqcovhqqf.apps.googleusercontent.com",
+          "client_id": "762024499034-09fvnnbi3j9r34tice5jqsa7mpo73top.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "hu.ait.macweekly",
-            "certificate_hash": "15cb2f27884066aa0217f9cab9126552ab08752b"
+            "certificate_hash": "0b9a1d662497124eca610b3b8ce470a9928433b3"
           }
         },
         {
-          "client_id": "203888960732-leqvl68c7lt3cif1ar41mtn7giv045e3.apps.googleusercontent.com",
+          "client_id": "762024499034-rbf6ue26u68lpbp8g1j6nnr4q7pabtrp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDGtcIvBGcZmPBOZOiv4IICW0YjwpVAAMk"
+          "current_key": "AIzaSyAdFyjzfBJnpcyfGFmKHCa2QQOQSlCZC3w"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "203888960732-leqvl68c7lt3cif1ar41mtn7giv045e3.apps.googleusercontent.com",
+              "client_id": "762024499034-rbf6ue26u68lpbp8g1j6nnr4q7pabtrp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
