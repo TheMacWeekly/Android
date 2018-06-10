@@ -35,6 +35,14 @@
                 android:id="@+id/nav_foodDrink"
                 android:icon="@drawable/food"
                 android:title="Food &amp; Drink" />
+            <item
+                android:id="@+id/nav_signOut"
+                android:icon="@drawable/sign_out"
+                android:title="Sign out" />
+            <item
+                    android:id="@+id/nav_login"
+                    android:icon="@drawable/login_key"
+                    android:title="Login" />
         </menu>
     </item>
 

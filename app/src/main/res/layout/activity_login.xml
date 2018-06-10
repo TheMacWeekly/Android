@@ -10,6 +10,7 @@
     android:id="@+id/root_activity_login">
 
     <ImageView
+        android:id="@+id/btnGoogleLogin"
         android:layout_width="wrap_content"
         android:layout_height="72dp"
         android:layout_gravity="center_horizontal"
