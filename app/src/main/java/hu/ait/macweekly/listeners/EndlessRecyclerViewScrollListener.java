@@ -2,6 +2,7 @@ package hu.ait.macweekly.listeners;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 
 /**
@@ -24,6 +25,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     private RecyclerView.LayoutManager mLayoutManager;
     private ParamManager mParamManager;
+
+    public void setLoading(boolean loading)
+    {
+        this.loading = loading;
+    }
 
     // TODO: 4/5/18 Separate the category manager from the endless scroll listener. Very much needed
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
@@ -49,6 +55,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // but first we check if we are waiting for the previous load to finish.
     @Override
     public void onScrolled(RecyclerView view, int dx, int dy) {
+        Log.w("ENDLESS_SCROLL", Boolean.toString(loading));
         int lastVisibleItemPosition = 0;
         int totalItemCount = mLayoutManager.getItemCount();
 
@@ -77,8 +84,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // threshold should reflect how many total columns there are too
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
+            Log.w("ENDLESS_SCROLL", "loadingmore");
             onLoadMore(currentPage, totalItemCount, view, mParamManager.getCatId(), mParamManager.getSearchStr());
-            loading = true;
         }
     }
 
