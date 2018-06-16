@@ -28,7 +28,18 @@
         <activity
             android:name=".MainActivity"
             android:label=""
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="@xml/filepaths" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ArticleActivity"
             android:label="@string/title_activity_article"
@@ -47,6 +58,16 @@
             android:name=".SearchActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
+        
+        <provider
+            android:authorities="hu.ait.macweekly.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
     </application>
 

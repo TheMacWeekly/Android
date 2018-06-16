@@ -1,11 +1,21 @@
 package hu.ait.macweekly;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -15,6 +25,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,6 +105,8 @@ public class ArticleActivity extends BaseActivity {
             sendIntent.putExtra(Intent.EXTRA_TEXT, mLinkData);
             mShareActionProvider.setShareIntent(sendIntent);
             return true;
+        } else if (id == R.id.action_feedback) {
+            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);
