@@ -150,8 +150,13 @@
     <string name="search">Search</string>
     <string name="no_results_explanation">It might help to try with different keywords</string>
     <string name="no_results">No results</string>
-    <string name="search_articles_hint"> Search articles...</string>
+    <string name="search_articles_hint">Search articles…</string>
     <string name="version_pre_string">Version</string>
     <string name="the_mac_weekly">The Mac Weekly</string>
+    <string name="error_must_be_macalester">Must be a macalester email</string>
+    <string name="email_not_verified">Email not verified</string>
+    <string name="registrationok">Registration successful</string>
+    <string name="verification_email_sent">Verification email sent</string>
+    <string name="signoutok">Sign out successful</string>
 
 </resources>

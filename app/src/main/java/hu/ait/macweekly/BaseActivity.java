@@ -115,7 +115,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void initialConnectionCheck() {
         if(Settings.System.getInt(this.getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, 0) != 0) {
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0) {
             getConnectBar().show();
         } else {
             getConnectBar().dismiss();
