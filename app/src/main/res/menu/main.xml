@@ -11,4 +11,9 @@
         android:orderInCategory="200"
         android:title="@string/about_label"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_feedback"
+        android:orderInCategory="300"
+        android:title="@string/action_send_feeback"
+        app:showAsAction="never" />
 </menu>
