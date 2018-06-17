@@ -137,7 +137,7 @@
     <string name ="phone_hardware">Hardware: %1$s </string>
     <string name="phone_serial">Serial #: %1$s</string>
     <string name="phone_tags">Tags: %1$s</string>
-    <string name="error_title">Error: </string>
+    <string name="email_report_cancel">Email Canceled</string>
     <string name="no_email_app">No email application detected - click to dismiss.</string>
     <string name="email_not_sent">Email not sent - click to dismiss.</string>
     <string name="email_app_chooser">Send email using: </string>
