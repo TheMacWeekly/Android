@@ -1,0 +1,62 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="General Settings">
+
+    <!-- Separate screen for account settings -->
+    <!-- TODO: Activity for favorites/comments/account switch and set in intents -->
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="btn_account_category_key"
+        android:title="Account Settings"
+        android:persistent="false">
+
+        <Preference
+            android:key="btn_view_favorites"
+            android:title="View Favorites">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="hu.ait.macweekly"
+                android:targetClass="hu.ait.macweekly.MainActivity"/>
+        </Preference>
+
+        <Preference
+            android:key="btn_view_comments"
+            android:title="View Comments">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="hu.ait.macweekly"
+                android:targetClass="hu.ait.macweekly.MainActivity"/>
+        </Preference>
+
+        <Preference
+            android:key="btn_switch_alumni"
+            android:title="Switch to Alumni Account" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="hu.ait.macweekly"
+                android:targetClass="hu.ait.macweekly.MainActivity"/>
+        </Preference>
+
+        <Preference
+            android:key="btn_log_out"
+            android:title="Log Out" />
+
+    </PreferenceScreen>
+
+    <Preference
+        android:key="btn_send_feedback"
+        android:title="Send Feedback" />
+
+    <Preference
+        android:key="btn_report_issue"
+        android:title="Report Issue" />
+
+    <Preference
+        android:key="btn_about_app"
+        android:title="About">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="hu.ait.macweekly"
+            android:targetClass="hu.ait.macweekly.AboutPage"/>
+    </Preference>
+
+
+</PreferenceScreen>

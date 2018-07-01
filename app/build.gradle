@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "hu.ait.macweekly"
         manifestPlaceholders = [
-                onesignal_app_id: '12bcae04-29f3-4c7b-954b-7c9c72b97b77',
+                onesignal_app_id               : '12bcae04-29f3-4c7b-954b-7c9c72b97b77',
                 // Project number pulled from dashboard, local value is ignored.
                 onesignal_google_project_number: 'REMOTE'
         ]
@@ -20,6 +20,7 @@ android {
         versionCode 13
         versionName "1.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -30,6 +31,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support:support-vector-drawable:25.4.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

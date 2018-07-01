@@ -214,6 +214,9 @@ public class MainActivity extends MacWeeklyApiActivity
             resetArticlesWithCategory(6);
         } else if (id == R.id.nav_foodDrink) {
             resetArticlesWithCategory(28);
+        } else if(id == R.id.nav_settings) {
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
