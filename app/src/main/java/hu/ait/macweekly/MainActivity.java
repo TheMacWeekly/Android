@@ -180,8 +180,6 @@ public class MainActivity extends MacWeeklyApiActivity
         }else if (id == R.id.about_page) {
             goToAboutPage();
             return true;
-        }else if (id == R.id.action_feedback) {
-            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);

@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     long currentTime = System.currentTimeMillis();
                     Resources res = getResources();
-                    String mStr = "User Feedback - ID " + Long.toString(currentTime);
+                    String mStr = "User Feedback - " + Long.toString(currentTime);
                     tActivity.sendFeedback(mStr);
                     return false;
                 }
@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     long currentTime = System.currentTimeMillis();
                     Resources res = getResources();
-                    String mStr = "Bug Report - ID " + Long.toString(currentTime);
+                    String mStr = "Bug Report - " + Long.toString(currentTime);
                     tActivity.sendFeedback(mStr);
                     return false;
                 }
