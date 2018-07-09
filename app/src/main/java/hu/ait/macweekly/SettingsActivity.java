@@ -91,9 +91,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             });
 
             Preference bugReport = (Preference) findPreference("btn_report_issue");
-            sendFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            bugReport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    Log.e("hi", "hit");
                     long currentTime = System.currentTimeMillis();
                     Resources res = getResources();
                     String mStr = "Bug Report - " + Long.toString(currentTime);
