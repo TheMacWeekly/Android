@@ -15,15 +15,17 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".SplashScreen"
-            android:theme="@style/SplashTheme">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/SplashTheme">
+
         </activity>
         <activity
             android:name=".MainActivity"
@@ -62,6 +64,16 @@
             android:name=".SearchActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
+        
+        <provider
+            android:authorities="hu.ait.macweekly.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

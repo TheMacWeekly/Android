@@ -105,6 +105,8 @@ public class ArticleActivity extends BaseActivity {
             sendIntent.putExtra(Intent.EXTRA_TEXT, mLinkData);
             mShareActionProvider.setShareIntent(sendIntent);
             return true;
+        } else if (id == R.id.action_feedback) {
+            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);

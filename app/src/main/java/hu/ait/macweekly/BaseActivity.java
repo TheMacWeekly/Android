@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
@@ -26,7 +25,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -38,7 +36,10 @@ import java.util.List;
 
 import butterknife.BindView;
 
+
 public class BaseActivity extends AppCompatActivity {
+
+    private final int SEND_EMAIL_REQUEST = 0;
 
     private ProgressDialog mProgressDialog;
     private View rootLayout;
@@ -115,7 +116,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void initialConnectionCheck() {
         if(Settings.System.getInt(this.getContentResolver(),
-                Settings.System.AIRPLANE_MODE_ON, 0) != 0) {
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0) {
             getConnectBar().show();
         } else {
             getConnectBar().dismiss();
@@ -160,5 +161,133 @@ public class BaseActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    /**
+     * Check that a mail client is present
+     */
+    public boolean isMailClientPresent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/html");
+        final PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, 0);
+
+        if (list.size() == 0) {
+            showSnackbar("No email applications found.", Snackbar.LENGTH_LONG);
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * Send email feedback
+     */
+    public void sendFeedback() {
+        final String[] recipients = {"themacweeklyapp@gmail.com"};
+        long currentTime = System.currentTimeMillis();
+        Resources res = getResources();
+        String emailSubject = String.format(res.getString(R.string.feedback_email_subject), currentTime);
+
+        Intent sendFeedbackIntent = new Intent(Intent.ACTION_SEND); //We have to use ACTION_SEND to include a single attachment - via Android dev docs
+        sendFeedbackIntent.setType("text/plain");
+        sendFeedbackIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
+        sendFeedbackIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+
+        String phoneDesc;
+
+        FileOutputStream fos = null;
+        File reportInfoFile = null;
+        try {
+            reportInfoFile = new File(getFilesDir(), "tempReportFile.txt");
+            fos = openFileOutput("tempReportFile.txt", Context.MODE_PRIVATE);
+            String writerString = getPhoneDetailsString();
+            fos.write(writerString.getBytes());
+
+        } catch (IOException e) {
+            showSnackbar(e.getMessage(), Snackbar.LENGTH_LONG);
+        } finally {
+            if (fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Uri fileUri = FileProvider.getUriForFile(this,
+                "hu.ait.macweekly.fileprovider",
+                reportInfoFile);
+
+        if (fileUri != null) {
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            BaseActivity.this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
+            sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+            String defaultBody = "Please write your thoughts or describe your issue."; //Feel free to change this.
+
+            sendFeedbackIntent.putExtra(Intent.EXTRA_TEXT, defaultBody);
+
+            if (isMailClientPresent()) {
+                startActivityForResult(Intent.createChooser(sendFeedbackIntent, res.getString(R.string.email_app_chooser)), SEND_EMAIL_REQUEST);
+            }
+        }
+
+    }
+
+    /**
+     * Format and return a string containing details about
+     * the user's phone
+     * @return
+     */
+    public String getPhoneDetailsString() {
+
+        Resources res = getResources();
+        StringBuilder writer = new StringBuilder();
+
+        writer.append(String.format(res.getString(R.string.phone_manufacturer), Build.MANUFACTURER));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_os), Build.VERSION.RELEASE));
+        writer.append(System.getProperty("line.separator"));
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        writer.append(String.format(res.getString(R.string.phone_screen_resolution), displayMetrics.heightPixels, displayMetrics.widthPixels));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_model), Build.MODEL));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_hardware), Build.HARDWARE));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_serial), Build.SERIAL));
+        writer.append(System.getProperty("line.separator"));
+
+        writer.append(String.format(res.getString(R.string.phone_tags), Build.TAGS));
+        writer.append(System.getProperty("line.separator"));
+
+        return writer.toString();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SEND_EMAIL_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                File tempData = new File(getFilesDir(), "tempReportFile.txt");
+                if (tempData.exists()) {
+                    tempData.delete();
+                }
+                showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT);
+            } else {
+                showAlertDialogue(getResources().getString(R.string.email_report_cancel),
+                        getResources().getString(R.string.email_not_sent));
+            }
+        }
     }
 }

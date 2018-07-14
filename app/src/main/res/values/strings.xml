@@ -130,14 +130,14 @@
     <string name="email_sent">Email sent successfully</string>
     <string name="unable_find_email_app">Unable to find email application</string>
 
-    <string name="phone_manufacturer">Manufacturer: %1$s </string>
-    <string name="phone_screen_resolution">Resolution: %1$d x %2$d </string>
-    <string name="phone_os">OS Version: %1$s </string>
-    <string name="phone_model">Model: %1$s </string>
-    <string name="phone_hardware">Hardware: %1$s </string>
+    <string name ="phone_manufacturer">Manufacturer: %1$s </string>
+    <string name ="phone_screen_resolution">Resolution: %1$d x %2$d </string>
+    <string name ="phone_os">OS Version: %1$s </string>
+    <string name ="phone_model">Model: %1$s </string>
+    <string name ="phone_hardware">Hardware: %1$s </string>
     <string name="phone_serial">Serial #: %1$s</string>
     <string name="phone_tags">Tags: %1$s</string>
-    <string name="error_title">Error: </string>
+    <string name="email_report_cancel">Email Canceled</string>
     <string name="no_email_app">No email application detected - click to dismiss.</string>
     <string name="email_not_sent">Email not sent - click to dismiss.</string>
     <string name="email_app_chooser">Send email using: </string>
@@ -150,13 +150,18 @@
     <string name="search">Search</string>
     <string name="no_results_explanation">It might help to try with different keywords</string>
     <string name="no_results">No results</string>
-    <string name="search_articles_hint"> Search articles...</string>
+    <string name="search_articles_hint">Search articles…</string>
     <string name="version_pre_string">Version</string>
     <string name="the_mac_weekly">The Mac Weekly</string>
     <string name="title_activity_push_test">PushTest</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
+    <string name="error_must_be_macalester">Must be a macalester email</string>
+    <string name="email_not_verified">Email not verified</string>
+    <string name="registrationok">Registration successful</string>
+    <string name="verification_email_sent">Verification email sent</string>
+    <string name="signoutok">Sign out successful</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

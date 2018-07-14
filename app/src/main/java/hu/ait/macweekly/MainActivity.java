@@ -19,14 +19,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +34,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import hu.ait.macweekly.adapter.NewsFeedRecyclerAdapter;
 import hu.ait.macweekly.data.Article;
 import hu.ait.macweekly.data.GuestAuthor;
@@ -75,7 +75,6 @@ public class MainActivity extends MacWeeklyApiActivity
         prepareNewsAPI();
 
         prepareContentViews();
-
     }
 
     private void prepareContentViews() {
@@ -129,8 +128,42 @@ public class MainActivity extends MacWeeklyApiActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        updateUI();
+    }
+
+    private void updateUI() {
+
+        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.navUsername);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            menu.findItem(R.id.nav_login).setVisible(false);
+            menu.findItem(R.id.nav_signOut).setVisible(true);
+            if (user.getDisplayName() != null) {
+                navUsername.setText(user.getDisplayName());
+            }
+            else {
+                navUsername.setText(user.getEmail());
+            }
+        }
+        else {
+            menu.findItem(R.id.nav_login).setVisible(true);
+            menu.findItem(R.id.nav_signOut).setVisible(false);
+            navUsername.setText(getString(R.string.the_mac_weekly));
+        }
+    }
+
     private void prepareDrawer(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -163,6 +196,7 @@ public class MainActivity extends MacWeeklyApiActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -180,6 +214,8 @@ public class MainActivity extends MacWeeklyApiActivity
         }else if (id == R.id.about_page) {
             goToAboutPage();
             return true;
+        }else if (id == R.id.action_feedback) {
+            sendFeedback();
         }
 
         return super.onOptionsItemSelected(item);
@@ -215,6 +251,12 @@ public class MainActivity extends MacWeeklyApiActivity
         } else if(id == R.id.nav_settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(i);
+        } else if (id == R.id.nav_signOut) {
+            FirebaseAuth.getInstance().signOut();
+            updateUI();
+            Toast.makeText(MainActivity.this, getString(R.string.signoutok), Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -262,11 +304,12 @@ public class MainActivity extends MacWeeklyApiActivity
             public void onSuccess(List<Article> articles) {
                 mArticleAdapter.addToDataSet(articles);
                 mArticleAdapter.notifyItemRangeChanged(startSize, ARTICLES_PER_CALL);
+                mEndlessScrollListener.setLoading(true);
             }
 
             @Override
             public void onFailure() {
-
+                mEndlessScrollListener.setLoading(false);
             }
         };
         callNewsAPI(pageNum, categoryId, searchString, articleCallback);
