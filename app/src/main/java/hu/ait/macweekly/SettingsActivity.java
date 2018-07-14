@@ -1,166 +1,114 @@
 package hu.ait.macweekly;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.preference.RingtonePreference;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindView;
-
-
-public class BaseActivity extends AppCompatActivity {
+/**
+ * A {@link PreferenceActivity} that presents a set of application settings. On
+ * handset devices, settings are presented as a single list. On tablets,
+ * settings are split by category, with category headers shown to the left of
+ * the list of settings.
+ * <p>
+ * See <a href="http://developer.android.com/design/patterns/settings.html">
+ * Android Design: Settings</a> for design guidelines and the <a
+ * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
+ * API Guide</a> for more information on developing a Settings UI.
+ */
+public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private final int SEND_EMAIL_REQUEST = 0;
-
-    private ProgressDialog mProgressDialog;
-    private View rootLayout;
-    private BroadcastReceiver mBroadcastRec;
-    private Snackbar mConnectIssueBar;
-
-    protected void setUpBaseActMembers(View rootLayout) {
-        this.rootLayout = rootLayout;
-    }
+    public static SettingsActivity tActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mBroadcastRec = new ConnectivityIssueReceiver(this);
-
-        registerBroadcastReciever();
-
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new FragSettingsFragment()).commit();
+        tActivity = this;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initialConnectionCheck();
-    }
+    public static class FragSettingsFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_general);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregReciever();
-    }
+            Preference logoutPref = (Preference) findPreference("btn_log_out");
+            logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    logout();
+                    return false;
+                }
+            });
 
+            Preference sendFeedback = (Preference) findPreference("btn_send_feedback");
+            sendFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    long currentTime = System.currentTimeMillis();
+                    Resources res = getResources();
+                    String mStr = "User Feedback - " + Long.toString(currentTime);
+                    tActivity.sendFeedback(mStr);
+                    return false;
+                }
+            });
 
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.wait));
+            Preference bugReport = (Preference) findPreference("btn_report_issue");
+            bugReport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Log.e("hi", "hit");
+                    long currentTime = System.currentTimeMillis();
+                    Resources res = getResources();
+                    String mStr = "Bug Report - " + Long.toString(currentTime);
+                    tActivity.sendFeedback(mStr);
+                    return false;
+                }
+            });
+
         }
 
-        mProgressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
+        private void logout() {
+            //TODO: Implement logout here
         }
-    }
 
-    public void showSnackbar(String text, int duration) {
-        View parentView = findViewById(android.R.id.content);
-        Snackbar mSnackbar = Snackbar.make(parentView, text, duration);
-        View sbView = mSnackbar.getView();
-        TextView tv = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(Color.WHITE);
-        sbView.setBackgroundColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
-        mSnackbar.show();
-    }
-
-    public void showAlertDialogue(String title, String content) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final boolean alertVal;
-
-        builder.setMessage(content).setTitle(title).setPositiveButton(R.string.confirm_email_failure, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //okay
-            }
-        });
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
-    }
-
-
-    private void initialConnectionCheck() {
-        if(Settings.System.getInt(this.getContentResolver(),
-                Settings.Global.AIRPLANE_MODE_ON, 0) != 0) {
-            getConnectBar().show();
-        } else {
-            getConnectBar().dismiss();
-        }
-    }
-
-    public Snackbar getConnectBar() {
-        if(mConnectIssueBar == null) {
-            View parentView = findViewById(android.R.id.content);
-            mConnectIssueBar = Snackbar.make(parentView, "Cannot connect to network...", Snackbar.LENGTH_INDEFINITE);
-            View sbView = mConnectIssueBar.getView();
-            TextView tv = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            sbView.setBackgroundColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
-        }
-        return mConnectIssueBar;
-    }
-
-    private void registerBroadcastReciever() {
-
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.AIRPLANE_MODE");
-
-        getApplicationContext().registerReceiver(mBroadcastRec, intentFilter);
-    }
-
-    private void unregReciever() {
-        if(mBroadcastRec != null)
-            getApplicationContext().unregisterReceiver(mBroadcastRec);
-    }
-
-    protected void setUpBackButton() {
-        Drawable drawable= ResourcesCompat.getDrawable(this.getResources(), R.drawable.arrow_left, null);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(drawable);
-        }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     /**
@@ -184,11 +132,9 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Send email feedback
      */
-    public void sendFeedback() {
+    public void sendFeedback(String emailSubject) {
         final String[] recipients = {"themacweeklyapp@gmail.com"};
-        long currentTime = System.currentTimeMillis();
         Resources res = getResources();
-        String emailSubject = String.format(res.getString(R.string.feedback_email_subject), currentTime);
 
         Intent sendFeedbackIntent = new Intent(Intent.ACTION_SEND); //We have to use ACTION_SEND to include a single attachment - via Android dev docs
         sendFeedbackIntent.setType("text/plain");
@@ -224,7 +170,7 @@ public class BaseActivity extends AppCompatActivity {
         if (fileUri != null) {
             sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             sendFeedbackIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            BaseActivity.this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
+            SettingsActivity.this.setResult(Activity.RESULT_OK, sendFeedbackIntent);
             sendFeedbackIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
 
             String defaultBody = "Please write your thoughts or describe your issue."; //Feel free to change this.
@@ -285,9 +231,34 @@ public class BaseActivity extends AppCompatActivity {
                 }
                 showSnackbar(getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT);
             } else {
-                showAlertDialogue(getResources().getString(R.string.email_report_cancel),
+                showAlertDialogue(getResources().getString(R.string.error_title),
                         getResources().getString(R.string.email_not_sent));
             }
         }
+    }
+
+    public void showSnackbar(String text, int duration) {
+        View parentView = findViewById(android.R.id.content);
+        Snackbar mSnackbar = Snackbar.make(parentView, text, duration);
+        View sbView = mSnackbar.getView();
+        TextView tv = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(Color.WHITE);
+        sbView.setBackgroundColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+        mSnackbar.show();
+    }
+
+    public void showAlertDialogue(String title, String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final boolean alertVal;
+
+        builder.setMessage(content).setTitle(title).setPositiveButton(R.string.confirm_email_failure, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //okay
+            }
+        });
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 }
