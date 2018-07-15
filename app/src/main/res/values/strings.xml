@@ -142,6 +142,7 @@
     <string name="email_not_sent">Email not sent - click to dismiss.</string>
     <string name="email_app_chooser">Send email using: </string>
     <string name="confirm_email_failure">Okay</string>
+    <string name="error_title">Error</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

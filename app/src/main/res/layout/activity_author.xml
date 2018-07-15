@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hu.ait.macweekly.SearchActivity">
+    tools:context="hu.ait.macweekly.AuthorActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -44,7 +44,6 @@
                 android:id="@+id/tvAuthorName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndtOf="@id/ivAuthor"
                 android:layout_toRightOf="@id/ivAuthor"
                 android:gravity="left"
                 android:text="Name" />
@@ -54,7 +53,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvAuthorName"
-                android:layout_toEndtOf="@id/ivAuthor"
                 android:layout_toRightOf="@id/ivAuthor"
                 android:gravity="left"
                 android:text="Bio" />

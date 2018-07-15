@@ -65,6 +65,8 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
 
         mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName) {}
+            @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
                 addArticles(page, categoryId, searchString);
             }

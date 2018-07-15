@@ -73,6 +73,42 @@ public abstract class MacWeeklyApiActivity extends BaseActivity {
         void onFailure();
     }
 
+    protected void callAuthoredNewsAPI(final int pageNum, String authorName, final ArticleCallback articleCallback) {
+        final Call<List<Article>> articleCall;
+
+        articleCall = newsAPI.getAuthoredArticles(pageNum, ARTICLES_PER_CALL, authorName);
+
+        Log.d(LOG_TAG, "Sent article api call ----------------");
+        articleCall.enqueue(new Callback<List<Article>>() {
+            @Override
+            public void onResponse(Call<List<Article>> call, Response<List<Article>> response) {
+
+                gotCallReturned();
+
+                if (response.body() != null && response.body().size() > 0) {
+                    Log.d(LOG_TAG, "Got response back. Page: "+pageNum+" -----------------");
+
+                    List<Article> cleanedResponse = response.body();
+
+                    onResponseSuccess(pageNum, cleanedResponse);
+
+                    articleCallback.onSuccess(cleanedResponse);
+
+                } else {
+                    Log.e(LOG_TAG, "api response body is null. Page: "+pageNum);
+                    onResponseSuccessEmptyBody(pageNum);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Article>> call, Throwable t) {
+                Log.e(LOG_TAG, "call failed. Could not retrieve page. Page: "+pageNum);
+                onResponseFailure(pageNum);
+                articleCallback.onFailure();
+            }
+        });
+    }
+
     protected void callNewsAPI(final int pageNum, int categoryId, String searchStr, final ArticleCallback articleCallback) {
         final Call<List<Article>> articleCall;
 
