@@ -172,11 +172,13 @@ public class ArticleActivity extends BaseActivity {
     }
 
     private void goToAuthor() {
-        Intent i = new Intent(ArticleActivity.this, AuthorActivity.class);
-        i.putExtra(ARTICLE_AUTHOR_KEY, mAuthorName);
-        i.putExtra(AUTHOR_BIO_KEY, mAuthorBio);
-        i.putExtra(AUTHOR_IMG_URL_KEY, mAuthorUrl);
-        startActivity(i);
+        if (!mAuthorName.equals("TheMacWeekly")) {
+            Intent i = new Intent(ArticleActivity.this, AuthorActivity.class);
+            i.putExtra(ARTICLE_AUTHOR_KEY, mAuthorName);
+            i.putExtra(AUTHOR_BIO_KEY, mAuthorBio);
+            i.putExtra(AUTHOR_IMG_URL_KEY, mAuthorUrl);
+            startActivity(i);
+        }
     }
 
     // TODO: 4/4/18 Move this to Kotlin since it has multi line support. This is ugly. Java is dumb for not supporting multiline strings
