@@ -116,6 +116,12 @@ public class ArticleActivity extends BaseActivity {
         mTitleView.setText(HTMLCompat.getInstance(getApplicationContext()).fromHtml(mTitleData));
         mDateView.setText(mDateData);
         mAuthorView.setText(mAuthorName);
+        mAuthorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAuthor();
+            }
+        });
         if(!MacWeeklyUtils.isTextEmpty(mAuthorUrl)) {
             mAuthorSnipitView.setVisibility(View.VISIBLE);
             Glide.with(this).load(mAuthorUrl).into(mAuthorSnipitImgView);
