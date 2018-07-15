@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="hu.ait.macweekly.SearchActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+        </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp" >
+
+            <ImageView
+                android:id="@+id/ivAuthor"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                app:srcCompat="@drawable/arrow_left" />
+
+            <TextView
+                android:id="@+id/tvAuthorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndtOf="@id/ivAuthor"
+                android:layout_toRightOf="@id/ivAuthor"
+                android:gravity="left"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/tvAuthorBio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvAuthorName"
+                android:layout_toEndtOf="@id/ivAuthor"
+                android:layout_toRightOf="@id/ivAuthor"
+                android:gravity="left"
+                android:text="Bio" />
+        </RelativeLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+</android.support.design.widget.CoordinatorLayout>
