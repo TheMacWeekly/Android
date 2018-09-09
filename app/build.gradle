@@ -7,7 +7,7 @@ apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '28.0.1'
     defaultConfig {
         applicationId "hu.ait.macweekly"
         manifestPlaceholders = [
@@ -30,8 +30,12 @@ android {
     }
 }
 
+
 dependencies {
     implementation 'com.android.support:support-vector-drawable:25.4.0'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -57,6 +61,14 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    api 'com.google.guava:guava:25.1-android'
+
+    annotationProcessor "org.immutables:value:2.6.1" // for annotation processor
+    compileOnly "org.immutables:value:2.6.1" // for annotations
+    compileOnly "org.immutables:builder:2.6.1" // for annotations
+    compileOnly "org.immutables:gson:2.6.1" // for annotations
+
 }
 
 apply plugin: 'com.google.gms.google-services'

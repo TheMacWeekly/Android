@@ -254,7 +254,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         builder.setMessage(content).setTitle(title).setPositiveButton(R.string.confirm_email_failure, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //okay
+                //okay (actually its not ok)
             }
         });
         AlertDialog dialog = builder.create();

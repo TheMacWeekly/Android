@@ -1,9 +1,12 @@
 package hu.ait.macweekly;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.PriorityQueue;
-
+import java.net.URI;
 /**
  * Created by Mack on 7/28/2017.
  */
@@ -15,6 +18,14 @@ public class MacWeeklyUtils {
             return true;
         }
         return false;
+    }
+
+    public static URI staticURI(String address) {
+        try {
+            return new URI(address);
+        } catch (URISyntaxException e){
+            throw new RuntimeException("URI must be valid at compile time.");
+        }
     }
 
     public static String formatDateTimeAgo(String oldDateString) {

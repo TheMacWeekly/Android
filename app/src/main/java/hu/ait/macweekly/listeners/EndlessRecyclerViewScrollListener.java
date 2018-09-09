@@ -4,6 +4,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.google.common.base.Optional;
+
+import hu.ait.macweekly.MacWeeklyAPI;
+import hu.ait.macweekly.MacWeeklyAPI.Posts.Category;
+
 
 /**
  * Code from https://github.com/codepath/android_guides/wiki/Endless-Scrolling-with-AdapterViews-and-RecyclerView
@@ -20,11 +25,13 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private int previousTotalItemCount = 0;
     // True if we are still waiting for the last set of data to load.
     private boolean loading = false;
+
     // Sets the starting page index
     private int startingPageIndex = 0;
+    private Optional<Category> selectedCategory = Optional.absent();
+    private Optional<String> searchString = Optional.absent();
 
     private RecyclerView.LayoutManager mLayoutManager;
-    private ParamManager mParamManager;
 
     public void setLoading(boolean loading)
     {
@@ -34,7 +41,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // TODO: 4/5/18 Separate the category manager from the endless scroll listener. Very much needed
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
-        this.mParamManager = new ParamManager();
     }
 
     public int getLastVisibleItem(int[] lastVisibleItemPositions) {
@@ -85,14 +91,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
             Log.w("ENDLESS_SCROLL", "loadingmore");
-            onLoadMore(currentPage, totalItemCount, view, mParamManager.getCatId(), mParamManager.getSearchStr());
+            onLoadMore(currentPage, totalItemCount, view, selectedCategory, searchString);
         }
     }
 
     // Call this method whenever performing new searches
-    public void resetState(RecyclerView view, int categoryId, String searchString) {
-        this.mParamManager.setCatId(categoryId);
-        this.mParamManager.setSearchStr(searchString);
+    public void resetState(RecyclerView view, Optional<Category> category, Optional<String> searchString) {
+        this.selectedCategory = category;
+        this.searchString = searchString;
+
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
@@ -109,60 +116,6 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     // Defines the process for actually loading more data based on page
-    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString);
-
-    public ParamManager getParamManager() {
-        return mParamManager;
-    }
-
-    /**
-     * This class is in charge of keeping track of what the current category or search parameters are.
-     * Stores a category id (Which could stand for no category) and a search string (Which could stand
-     * for no search param).
-     */
-    public class ParamManager {
-        public static final String NO_SEARCH = "";
-        public static final int NO_CATEGORY = -1;
-
-        int categoryId = NO_CATEGORY;
-        String searchStr = NO_SEARCH;
-
-        protected void setCatId(int catId) {
-            this.categoryId = catId;
-        }
-
-        public int getCatId() {return this.categoryId;}
-
-        public boolean usingCatId() {return this.categoryId != NO_CATEGORY;}
-
-        public String getCatString(int catId) {
-            switch(catId) {
-                case -1:
-                    return "All Stories";
-                case 3:
-                    return "News";
-                case 5:
-                    return "Sports";
-                case 4:
-                    return "Features";
-                case 7:
-                    return "Opinion";
-                case 6:
-                    return "Arts";
-                case 28:
-                    return "Food & Drink";
-                default:
-                    return "All Stories";
-            }
-        }
-
-        protected void setSearchStr(String searchStr) {
-            this.searchStr = searchStr;
-        }
-
-        public String getSearchStr() {return this.searchStr;}
-
-        public boolean usingSearchStr() {return !this.searchStr.equals(NO_SEARCH);}
-    }
+    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, Optional<Category> categoryId, Optional<String> searchString);
 
 }

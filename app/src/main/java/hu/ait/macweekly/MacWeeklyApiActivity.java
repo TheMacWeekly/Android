@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
+import javax.crypto.Mac;
+
 import butterknife.BindView;
 import hu.ait.macweekly.data.Article;
 import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
@@ -73,11 +75,16 @@ public abstract class MacWeeklyApiActivity extends BaseActivity {
         void onFailure();
     }
 
-    protected void callNewsAPI(final int pageNum, int categoryId, String searchStr, final ArticleCallback articleCallback) {
+    protected void callNewsAPI(final int pageNum, Opt, String searchStr, final ArticleCallback articleCallback) {
         final Call<List<Article>> articleCall;
+        ImmutablePosts.Builder builder = ImmutablePosts.builder();
 
         boolean hasCategory = categoryId != EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY;
         boolean hasSearch = !searchStr.equals(EndlessRecyclerViewScrollListener.ParamManager.NO_SEARCH);
+
+        if (hasCategory) {
+            builder = builder.category(MacWeeklyAPI.Posts.Category.fromAPIID(categoryId));
+        }
 
         // Here we build our articleCall based on what information is passed to us
         if(hasCategory && hasSearch) { // If we have category or search string, use those...

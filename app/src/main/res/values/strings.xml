@@ -155,6 +155,9 @@
     <string name="the_mac_weekly">The Mac Weekly</string>
     <string name="title_activity_push_test">PushTest</string>
     <string name="title_activity_settings">Settings</string>
+    <!-- In what context is this the error title? Vague string name. -->
+    <string name="error_title">Error: </string>
+
 
     <!-- Strings related to Settings -->
     <string name="error_must_be_macalester">Must be a macalester email</string>

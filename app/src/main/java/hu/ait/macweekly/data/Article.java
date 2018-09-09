@@ -70,7 +70,7 @@ public class Article {
     @SerializedName("meta")
     @Expose
     public List<Object> meta = null;
-    @SerializedName("categories")
+    @SerializedName("category")
     @Expose
     public List<Integer> categories = null;
     @SerializedName("tags")
