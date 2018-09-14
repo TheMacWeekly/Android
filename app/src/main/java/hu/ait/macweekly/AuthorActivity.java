@@ -159,7 +159,7 @@ public class AuthorActivity extends MacWeeklyApiActivity implements ArticleViewC
         if(authorBio != null) mAuthorBio = authorBio;
         else mAuthorBio = "";
 
-        mAuthorBioView.setText(mAuthorBio);
+        mAuthorBioView.setText(HTMLCompat.getInstance(getApplication()).fromHtml(mAuthorBio));
 
         String authorImgUrl = validIntent.getStringExtra(AUTHOR_IMG_URL_KEY);
         if(authorImgUrl != null) {

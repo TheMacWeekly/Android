@@ -252,7 +252,7 @@ public class MainActivity extends MacWeeklyApiActivity
             resetArticlesWithCategory(28);
         } else if(id == R.id.nav_settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(i);
+            startActivityForResult(i, 0);
         } else if (id == R.id.nav_signOut) {
             FirebaseAuth.getInstance().signOut();
             updateUI();

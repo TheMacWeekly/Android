@@ -125,7 +125,8 @@ public class ArticleActivity extends BaseActivity {
         if(!MacWeeklyUtils.isTextEmpty(mAuthorUrl)) {
             mAuthorSnipitView.setVisibility(View.VISIBLE);
             Glide.with(this).load(mAuthorUrl).into(mAuthorSnipitImgView);
-            mAuthorSnipitNameView.setText(mAuthorName);
+            String mAuthorNameEscaped = mAuthorName.replace(" ", "\n");
+            mAuthorSnipitNameView.setText(mAuthorNameEscaped);
             mAuthorBioView.setText(HTMLCompat.getInstance(this).fromHtml(mAuthorBio));
         } else {
             mAuthorSnipitView.setVisibility(View.GONE);
