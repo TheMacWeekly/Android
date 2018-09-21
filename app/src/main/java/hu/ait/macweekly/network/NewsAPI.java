@@ -21,4 +21,6 @@ public interface NewsAPI {
     Call<List<Article>> getArticles(@Query("page") int pageNum, @Query("per_page") int amountPerPage, @Query("search") String searchString);
     @GET("wp-json/wp/v2/posts")
     Call<List<Article>> getArticles(@Query("page") int pageNum, @Query("per_page") int amountPerPage, @Query("categories") int categoryId, @Query("search") String searchString);
+    @GET("wp-json/wp/v2/posts")
+    Call<List<Article>> getAuthoredArticles(@Query("page") int pageNum, @Query("per_page") int amountPerPage, @Query("author") String authorName);
 }

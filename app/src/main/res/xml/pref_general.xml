@@ -1,12 +1,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="General Settings">
+    android:title="Settings"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <!-- Separate screen for account settings -->
     <!-- TODO: Activity for favorites/comments/account switch and set in intents -->
     <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="btn_account_category_key"
         android:title="Account Settings"
-        android:persistent="false">
+        android:persistent="false"
+        windowActionBar="false" >
 
         <Preference
             android:key="btn_view_favorites"
@@ -37,7 +39,8 @@
 
         <Preference
             android:key="btn_log_out"
-            android:title="Log Out" />
+            android:title="Log Out">
+        </Preference>
 
     </PreferenceScreen>
 

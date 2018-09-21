@@ -24,9 +24,7 @@
         </activity>
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/SplashTheme">
-
-        </activity>
+            android:theme="@style/SplashTheme"></activity>
         <activity
             android:name=".MainActivity"
             android:label=""
@@ -64,17 +62,16 @@
             android:name=".SearchActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+
         <provider
-            android:authorities="hu.ait.macweekly.fileprovider"
             android:name="android.support.v4.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:authorities="hu.ait.macweekly.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="hu.ait.macweekly.fileprovider"
@@ -98,7 +95,12 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".AuthorActivity"
+            android:label="Author"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

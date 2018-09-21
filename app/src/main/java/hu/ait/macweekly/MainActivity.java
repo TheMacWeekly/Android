@@ -82,6 +82,8 @@ public class MainActivity extends MacWeeklyApiActivity
 
         mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName) {}
+            @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
                 addArticles(page, categoryId, searchString);
             }
@@ -250,7 +252,7 @@ public class MainActivity extends MacWeeklyApiActivity
             resetArticlesWithCategory(28);
         } else if(id == R.id.nav_settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(i);
+            startActivityForResult(i, 0);
         } else if (id == R.id.nav_signOut) {
             FirebaseAuth.getInstance().signOut();
             updateUI();

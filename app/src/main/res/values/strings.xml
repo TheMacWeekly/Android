@@ -130,11 +130,11 @@
     <string name="email_sent">Email sent successfully</string>
     <string name="unable_find_email_app">Unable to find email application</string>
 
-    <string name ="phone_manufacturer">Manufacturer: %1$s </string>
-    <string name ="phone_screen_resolution">Resolution: %1$d x %2$d </string>
-    <string name ="phone_os">OS Version: %1$s </string>
-    <string name ="phone_model">Model: %1$s </string>
-    <string name ="phone_hardware">Hardware: %1$s </string>
+    <string name="phone_manufacturer">Manufacturer: %1$s </string>
+    <string name="phone_screen_resolution">Resolution: %1$d x %2$d </string>
+    <string name="phone_os">OS Version: %1$s </string>
+    <string name="phone_model">Model: %1$s </string>
+    <string name="phone_hardware">Hardware: %1$s </string>
     <string name="phone_serial">Serial #: %1$s</string>
     <string name="phone_tags">Tags: %1$s</string>
     <string name="email_report_cancel">Email Canceled</string>
@@ -142,6 +142,7 @@
     <string name="email_not_sent">Email not sent - click to dismiss.</string>
     <string name="email_app_chooser">Send email using: </string>
     <string name="confirm_email_failure">Okay</string>
+    <string name="error_title">Error</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -165,4 +166,5 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+    <string name="title_activity_author">AuthorActivity</string>
 </resources>

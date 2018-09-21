@@ -24,6 +24,11 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Settings" parent="AppTheme.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.SearchBar">
         <item name="windowNoTitle">true</item>
         <item name="android:textColor">@color/black</item>
@@ -116,6 +121,16 @@
     <style name="snipitBio">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="authorActivityName">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="authorActivityBio">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 

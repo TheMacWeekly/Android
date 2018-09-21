@@ -14,7 +14,10 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +30,17 @@ import hu.ait.macweekly.data.GuestAuthor;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 
-public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewClickListener {
+public class AuthorActivity extends MacWeeklyApiActivity implements ArticleViewClickListener {
 
     boolean showingNewsFeed = false;
-    String searchQuery = "";
+
+    // Keys
+    public static final String ARTICLE_AUTHOR_KEY = "articleAuthorKey";
+    public static final String AUTHOR_IMG_URL_KEY = "authorImgUrlKey";
+    public static final String AUTHOR_BIO_KEY = "authorBioKey";
 
     // Constants
-    private final String LOG_TAG = "SearchActivity - ";
+    private final String LOG_TAG = "AuthorActivity - ";
 
     // Members
     private SearchRecyclerAdapter mArticleAdapter;
@@ -41,17 +48,24 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
 
     // Views
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.search_field) EditText mSearchField;
     @BindView(R.id.errorButton) Button mErrorButtonView;
+    @BindView(R.id.ivAuthor) ImageView mAuthorImageView;
+    @BindView(R.id.tvAuthorName) TextView mAuthorNameView;
+    @BindView(R.id.tvAuthorBio) TextView mAuthorBioView;
+
+    // Data
+    String mAuthorName;
+    String mAuthorBio;
+    String mAuthorImgUrl;
 
     // Code
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "Loading AuthorActivity");
         initContentViews();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        populateDataMembers();
 
         prepareNewsAPI();
 
@@ -65,13 +79,14 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
 
         mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName) {}
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
-                addArticles(page, categoryId, searchString);
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName) {
+                addArticles(page, authorName);
             }
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {}
         };
         EndlessRecyclerViewScrollListener.ParamManager paramManager = mEndlessScrollListener.getParamManager();
+        paramManager.setAuthorName(mAuthorName);
 
         mArticleAdapter = new SearchRecyclerAdapter(getApplicationContext(), this, paramManager);
         mArticleAdapter.setDataSet(new ArrayList<Article>());
@@ -81,51 +96,12 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                resetArticlesWithSearch(searchQuery);
+                resetArticles();
             }
         });
 
         mMainContent.addOnScrollListener(mEndlessScrollListener);
 
-        // Setting up search view
-        TextView.OnEditorActionListener editListener = new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-
-                // If the enter key was hit
-                // Note: There might be an error here. Not sure if this is the enter button for all
-                //       devices... I think it is, but if there is a bug with search enter key check here
-                if (i == EditorInfo.IME_ACTION_DONE ||
-                        (keyEvent != null && keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)) {
-
-                    closeKeyboard();
-
-                    searchQuery = "";
-                    if(mSearchField.getText() != null) searchQuery = mSearchField.getText().toString();
-
-                    // If the search is valid
-                    if(isValidSearchQuery(searchQuery)) {
-                        resetArticlesWithSearch(searchQuery);
-                    } else {
-                        Log.d(LOG_TAG, "Search input with only spaces or empty is invalid");
-                        showScreenHint(SC_STARTSEARCH);
-                    }
-                }
-                return true;
-            }
-        };
-
-        mErrorButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetArticlesWithSearch(searchQuery);
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
-
-        mSearchField.setOnEditorActionListener(editListener);
-
-        showScreenHint(SC_STARTSEARCH);
     }
 
     private void closeKeyboard() {
@@ -136,40 +112,23 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
         }
     }
 
-    private boolean isValidSearchQuery(String query) {
-        if(query == null) return false;
-
-        String noWhiteSpace = query.replaceAll("\\s+","");
-        return !MacWeeklyUtils.isTextEmpty(noWhiteSpace);
-    }
-
     private void initContentViews() {
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_author);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
     }
 
-    private void resetArticlesWithSearch(String searchString) {
-        if(isValidSearchQuery(searchString)) {
-            resetArticles(EndlessRecyclerViewScrollListener.ParamManager.NO_CATEGORY, searchString);
-        } else {
-            Log.d(LOG_TAG, "Search input with only spaces or empty is invalid");
-            showScreenHint(SC_STARTSEARCH);
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    private void resetArticles(int categoryId, String searchString) {
+    private void resetArticles() {
         mArticleAdapter.clearDataSet();
         mArticleAdapter.notifyDataSetChanged();
         showScreenHint(SC_MAINCONTENT);
-        mEndlessScrollListener.resetState(mMainContent, categoryId, searchString);
+        mEndlessScrollListener.resetState(mMainContent, mAuthorName);
         mEndlessScrollListener.startListener(mMainContent);
     }
 
-    private void addArticles(int pageNum, int categoryId, String searchString) {
+    private void addArticles(int pageNum, String authorName) {
         final int startSize = mArticleAdapter.getItemCount();
         MacWeeklyApiActivity.ArticleCallback articleCallback = new MacWeeklyApiActivity.ArticleCallback() {
             @Override
@@ -184,7 +143,33 @@ public class SearchActivity extends MacWeeklyApiActivity implements ArticleViewC
                 if (mArticleAdapter.getDataSet().size() == 0) showScreenHint(SC_ERROR);
             }
         };
-        callNewsAPI(pageNum, categoryId, searchString, articleCallback);
+        callAuthoredNewsAPI(pageNum, authorName, articleCallback);
+    }
+
+    private void populateDataMembers() {
+        Intent validIntent = getIntent();
+
+        String authorText = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
+        if(authorText != null) mAuthorName = authorText; //Currently the mac weekly is a mess and when they don't have guest authors stored the title is stored here instead :/
+        else mAuthorName = "";
+
+        mAuthorNameView.setText(mAuthorName);
+
+        String authorBio = validIntent.getStringExtra(AUTHOR_BIO_KEY);
+        if(authorBio != null) mAuthorBio = authorBio;
+        else mAuthorBio = "";
+
+        mAuthorBioView.setText(HTMLCompat.getInstance(getApplication()).fromHtml(mAuthorBio));
+
+        String authorImgUrl = validIntent.getStringExtra(AUTHOR_IMG_URL_KEY);
+        if(authorImgUrl != null) {
+            mAuthorImgUrl = authorImgUrl;
+            Glide.with(this).load(mAuthorImgUrl).into(mAuthorImageView);
+            mAuthorImageView.setVisibility(View.VISIBLE);
+        } else {
+            mAuthorImgUrl = "";
+            mAuthorImageView.setVisibility(View.GONE);
+        }
     }
 
     @Override
