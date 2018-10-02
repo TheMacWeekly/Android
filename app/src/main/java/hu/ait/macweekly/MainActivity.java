@@ -1,17 +1,10 @@
 package hu.ait.macweekly;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,25 +13,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.*;
 import hu.ait.macweekly.adapter.NewsFeedRecyclerAdapter;
 import hu.ait.macweekly.data.Article;
 import hu.ait.macweekly.data.GuestAuthor;
+import hu.ait.macweekly.data.User;
 import hu.ait.macweekly.listeners.ArticleViewClickListener;
 import hu.ait.macweekly.listeners.EndlessRecyclerViewScrollListener;
 
@@ -46,7 +36,11 @@ public class MainActivity extends MacWeeklyApiActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ArticleViewClickListener {
 
+
     boolean showingNewsFeed = false;
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mUsersDatabaseReference;
 
     // Constants
     private final String LOG_TAG = "MainActivity - ";
@@ -59,18 +53,34 @@ public class MainActivity extends MacWeeklyApiActivity
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.errorButton) Button mErrorButtonView;
 
+
+    private static Context mContext;
+
+    public static Context getAppContext(){
+        return mContext;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     // Code
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUsersDatabaseReference = mFirebaseDatabase.getReference().child("users");
+        mContext = this.getApplicationContext();
+
         initContentViews();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         prepareDrawer(toolbar);
-
-        prepareNavView();
 
         prepareNewsAPI();
 
@@ -125,44 +135,6 @@ public class MainActivity extends MacWeeklyApiActivity
         ButterKnife.bind(this);
     }
 
-    private void prepareNavView() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        updateUI();
-    }
-
-    private void updateUI() {
-
-        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
-        Menu menu = navigationView.getMenu();
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = (TextView) headerView.findViewById(R.id.navUsername);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            menu.findItem(R.id.nav_login).setVisible(false);
-            menu.findItem(R.id.nav_signOut).setVisible(true);
-            if (user.getDisplayName() != null) {
-                navUsername.setText(user.getDisplayName());
-            }
-            else {
-                navUsername.setText(user.getEmail());
-            }
-        }
-        else {
-            menu.findItem(R.id.nav_login).setVisible(true);
-            menu.findItem(R.id.nav_signOut).setVisible(false);
-            navUsername.setText(getString(R.string.the_mac_weekly));
-        }
-    }
-
     private void prepareDrawer(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -170,6 +142,36 @@ public class MainActivity extends MacWeeklyApiActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void updateUI() {
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        final Menu menu = navigationView.getMenu();
+
+        View headerView = navigationView.getHeaderView(0);
+        final TextView navUsername = headerView.findViewById(R.id.navUsername);
+
+        @NonNull final FirebaseUser firebaseUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser());
+        mUsersDatabaseReference.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    User user = dataSnapshot.getValue(User.class);
+                    navUsername.setText(user.name);
+                    if (user.isGuest) {
+                        menu.findItem(R.id.nav_login).setVisible(true);
+                        menu.findItem(R.id.nav_signOut).setVisible(false);
+                    }
+                    else {
+                        menu.findItem(R.id.nav_login).setVisible(false);
+                        menu.findItem(R.id.nav_signOut).setVisible(true);
+                    }
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     // TODO: 3/31/18 Fix this! banner logo does not exist
@@ -230,7 +232,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -253,15 +255,13 @@ public class MainActivity extends MacWeeklyApiActivity
         } else if(id == R.id.nav_settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
             startActivityForResult(i, 0);
-        } else if (id == R.id.nav_signOut) {
+        } else if (id == R.id.nav_signOut || id == R.id.nav_login) {
             FirebaseAuth.getInstance().signOut();
-            updateUI();
-            Toast.makeText(MainActivity.this, getString(R.string.signoutok), Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_login) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

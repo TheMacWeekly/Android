@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hu.ait.macweekly">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".ApplicationClass"
@@ -14,17 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:name=".SplashScreen"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SplashScreen"
-            android:theme="@style/SplashTheme"></activity>
         <activity
             android:name=".MainActivity"
             android:label=""
@@ -45,6 +41,10 @@
             </intent-filter>
         </activity>
         <activity
+                android:name=".LoginActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ArticleActivity"
             android:label="@string/title_activity_article"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -62,6 +62,15 @@
             android:name=".SearchActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".AlumniLoginActivity"
+            android:label="Alumni Login"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".AlumniRegistrationActivity"
+            android:label="Create Account" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

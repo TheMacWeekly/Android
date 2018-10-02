@@ -9,6 +9,6 @@
     <item
         android:id="@+id/action_feedback"
         android:orderInCategory="200"
-        android:title="@string/action_send_feeback"
+        android:title="@string/action_send_feedback"
         app:showAsAction="never" />
 </menu>

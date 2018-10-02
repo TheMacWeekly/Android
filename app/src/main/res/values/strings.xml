@@ -24,7 +24,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_send_feeback">Send Feedback or Issue</string>
+    <string name="action_send_feedback">Send Feedback or Issue</string>
     <string name="action_refresh">Refresh</string>
     <string name="pass_leng">Must be 8 or more characters</string>
     <string name="error_must_be_email">Must be an email</string>
@@ -163,6 +163,15 @@
     <string name="registrationok">Registration successful</string>
     <string name="verification_email_sent">Verification email sent</string>
     <string name="signoutok">Sign out successful</string>
+    <string name="student_login">Student Login</string>
+    <string name="alumni_login">Alumni Login</string>
+    <string name="error_sign_in_cancelled">Sign in cancelled</string>
+    <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="continue_as_guest"><u>continue as a guest</u></string>
+    <string name="dont_have_an_account"><u>Don\'t have an account?</u></string>
+    <string name="setup_alumni_account">Setup Alumni Account</string>
+    <string name="error_passwords_dont_match">Passwords don\'t match</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

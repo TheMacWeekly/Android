@@ -30,7 +30,7 @@
 
         <Preference
             android:key="btn_switch_alumni"
-            android:title="Switch to Alumni Account" >
+            android:title="Setup Alumni Account" >
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="hu.ait.macweekly"

@@ -89,14 +89,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            Preference logoutPref = (Preference) findPreference("btn_log_out");
-            logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            Preference account_settings = (Preference) findPreference("btn_account_category_key");
+            account_settings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    logout();
-                    Intent i = new Intent(FragSettingsFragment.this.getView().getContext(), LoginActivity.class);
-                    startActivity(i);
-                    return false;
+                    startActivity(new Intent(MainActivity.getAppContext(), AlumniRegistrationActivity.class));
+                    return true;
+                }
+            });
+
+            Preference setupAlumni = (Preference) findPreference("btn_switch_alumni");
+            setupAlumni.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    startActivity(new Intent(MainActivity.getAppContext(), AlumniRegistrationActivity.class));
+                    return true;
                 }
             });
 
