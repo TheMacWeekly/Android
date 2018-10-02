@@ -1,5 +1,6 @@
 package hu.ait.macweekly;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,9 +22,6 @@ import java.util.*;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -55,6 +53,13 @@ public class MainActivity extends MacWeeklyApiActivity
     @BindView(R.id.refresh_view) SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.errorButton) Button mErrorButtonView;
 
+
+    private static Context mContext;
+
+    public static Context getAppContext(){
+        return mContext;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -68,6 +73,7 @@ public class MainActivity extends MacWeeklyApiActivity
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUsersDatabaseReference = mFirebaseDatabase.getReference().child("users");
+        mContext = this.getApplicationContext();
 
         initContentViews();
 
@@ -85,6 +91,8 @@ public class MainActivity extends MacWeeklyApiActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         mEndlessScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName) {}
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString) {
                 addArticles(page, categoryId, searchString);
@@ -149,19 +157,16 @@ public class MainActivity extends MacWeeklyApiActivity
         mUsersDatabaseReference.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("AAAA", dataSnapshot.toString());
                 if (dataSnapshot.getValue() != null) {
                     User user = dataSnapshot.getValue(User.class);
                     navUsername.setText(user.name);
                     if (user.isGuest) {
                         menu.findItem(R.id.nav_login).setVisible(true);
                         menu.findItem(R.id.nav_signOut).setVisible(false);
-                        menu.findItem(R.id.nav_account).setVisible(false);
                     }
                     else {
                         menu.findItem(R.id.nav_login).setVisible(false);
                         menu.findItem(R.id.nav_signOut).setVisible(true);
-                        menu.findItem(R.id.nav_account).setVisible(true);
                     }
                 }
             }
@@ -233,8 +238,6 @@ public class MainActivity extends MacWeeklyApiActivity
 
         if (id == R.id.nav_search) {
             startSearchActivity();
-        } else if (id == R.id.nav_account) {
-            startActivity(new Intent(this, AccountActivity.class));
         } else if (id == R.id.nav_allStories) { // TODO: 3/31/18 Find better way than hardcoding this
             resetArticlesClear();
         } else if (id == R.id.nav_news) {
@@ -249,6 +252,9 @@ public class MainActivity extends MacWeeklyApiActivity
             resetArticlesWithCategory(6);
         } else if (id == R.id.nav_foodDrink) {
             resetArticlesWithCategory(28);
+        } else if(id == R.id.nav_settings) {
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivityForResult(i, 0);
         } else if (id == R.id.nav_signOut || id == R.id.nav_login) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

@@ -85,7 +85,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
             Log.w("ENDLESS_SCROLL", "loadingmore");
-            onLoadMore(currentPage, totalItemCount, view, mParamManager.getCatId(), mParamManager.getSearchStr());
+            if (mParamManager.getAuthorName().equals(mParamManager.NO_AUTHOR)) {
+                onLoadMore(currentPage, totalItemCount, view, mParamManager.getCatId(), mParamManager.getSearchStr());
+            } else {
+                onLoadMore(currentPage, totalItemCount, view, mParamManager.getAuthorName());
+            }
         }
     }
 
@@ -93,6 +97,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     public void resetState(RecyclerView view, int categoryId, String searchString) {
         this.mParamManager.setCatId(categoryId);
         this.mParamManager.setSearchStr(searchString);
+        this.currentPage = this.startingPageIndex;
+        this.previousTotalItemCount = 0;
+        this.loading = true;
+        onScrolled(view, 0, 0);
+    }
+
+    // Call this method to perform new search by author.
+    public void resetState(RecyclerView view, String authorName) {
+        this.mParamManager.setAuthorName(authorName);
         this.currentPage = this.startingPageIndex;
         this.previousTotalItemCount = 0;
         this.loading = true;
@@ -111,6 +124,9 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, int categoryId, String searchString);
 
+    // Defines the process for actually loading more data based on page
+    public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view, String authorName);
+
     public ParamManager getParamManager() {
         return mParamManager;
     }
@@ -118,14 +134,16 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     /**
      * This class is in charge of keeping track of what the current category or search parameters are.
      * Stores a category id (Which could stand for no category) and a search string (Which could stand
-     * for no search param).
+     * for no search param). Also stores author name.
      */
     public class ParamManager {
         public static final String NO_SEARCH = "";
         public static final int NO_CATEGORY = -1;
+        public static final String NO_AUTHOR = "";
 
         int categoryId = NO_CATEGORY;
         String searchStr = NO_SEARCH;
+        String authorName = NO_AUTHOR;
 
         protected void setCatId(int catId) {
             this.categoryId = catId;
@@ -160,9 +178,13 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             this.searchStr = searchStr;
         }
 
+        public void setAuthorName(String authorName) { this.authorName = authorName; }
+
         public String getSearchStr() {return this.searchStr;}
 
         public boolean usingSearchStr() {return !this.searchStr.equals(NO_SEARCH);}
+
+        public String getAuthorName() {return this.authorName;}
     }
 
 }

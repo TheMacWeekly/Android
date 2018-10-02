@@ -116,10 +116,17 @@ public class ArticleActivity extends BaseActivity {
         mTitleView.setText(HTMLCompat.getInstance(getApplicationContext()).fromHtml(mTitleData));
         mDateView.setText(mDateData);
         mAuthorView.setText(mAuthorName);
+        mAuthorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAuthor();
+            }
+        });
         if(!MacWeeklyUtils.isTextEmpty(mAuthorUrl)) {
             mAuthorSnipitView.setVisibility(View.VISIBLE);
             Glide.with(this).load(mAuthorUrl).into(mAuthorSnipitImgView);
-            mAuthorSnipitNameView.setText(mAuthorName);
+            String mAuthorNameEscaped = mAuthorName.replace(" ", "\n");
+            mAuthorSnipitNameView.setText(mAuthorNameEscaped);
             mAuthorBioView.setText(HTMLCompat.getInstance(this).fromHtml(mAuthorBio));
         } else {
             mAuthorSnipitView.setVisibility(View.GONE);
@@ -133,6 +140,12 @@ public class ArticleActivity extends BaseActivity {
         String authorText = validIntent.getStringExtra(ARTICLE_AUTHOR_KEY);
         if(authorText != null) mAuthorName = authorText; //Currently the mac weekly is a mess and when they don't have guest authors stored the title is stored here instead :/
         else mAuthorName = "";
+        mAuthorSnipitNameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAuthor();
+            }
+        });
 
         String authorBio = validIntent.getStringExtra(AUTHOR_BIO_KEY);
         if(authorBio != null) mAuthorBio = authorBio;
@@ -157,6 +170,16 @@ public class ArticleActivity extends BaseActivity {
         webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setJavaScriptEnabled(true); // It has a warning about this. Ignore it. It allows us to play video
         webView.loadDataWithBaseURL(mLinkData, data,"text/html", "UTF-8", null);
+    }
+
+    private void goToAuthor() {
+        if (!mAuthorName.equals("TheMacWeekly")) {
+            Intent i = new Intent(ArticleActivity.this, AuthorActivity.class);
+            i.putExtra(ARTICLE_AUTHOR_KEY, mAuthorName);
+            i.putExtra(AUTHOR_BIO_KEY, mAuthorBio);
+            i.putExtra(AUTHOR_IMG_URL_KEY, mAuthorUrl);
+            startActivity(i);
+        }
     }
 
     // TODO: 4/4/18 Move this to Kotlin since it has multi line support. This is ugly. Java is dumb for not supporting multiline strings

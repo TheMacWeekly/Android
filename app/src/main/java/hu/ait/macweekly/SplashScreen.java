@@ -3,7 +3,6 @@ package hu.ait.macweekly;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import com.facebook.login.Login;
 
 /**
  * Created by mackhartley on 2/3/18.

@@ -94,56 +94,61 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="32dp"
+                android:padding="5dp"
                 android:background="@color/white"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="1.5dp"
-                app:cardUseCompatPadding="false">
+                app:cardUseCompatPadding="false" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/author_snipit_image"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="36dp" />
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp" >
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center_horizontal" >
+
+                        <ImageView
+                            android:id="@+id/author_snipit_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="100dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp" />
 
                         <TextView
                             android:id="@+id/author_snipit_name"
-                            style="@style/snipitName"
+                            style="@style/authorActivityName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textAlignment="center"
-                            android:maxLines="3"/>
-
-                        <View
-                            android:layout_width="200dp"
-                            android:layout_height="1dp"
-                            android:background="@color/black"/>
+                            android:layout_weight="1"
+                            android:maxLines="3"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_gravity="start|center_vertical" />
 
                     </LinearLayout>
 
-
                     <TextView
                         android:id="@+id/author_snipit_bio"
-                        style="@style/snipitBio"
+                        style="@style/authorActivityBio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:layout_weight="1"
                         android:paddingBottom="28dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
                         android:textAlignment="center" />
+
+
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>

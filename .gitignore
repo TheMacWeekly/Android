@@ -12,4 +12,5 @@
 .idea/misc.xml
 app/app-release.apk
 .idea*
+.idea/modules.xml
 *google-services.json
