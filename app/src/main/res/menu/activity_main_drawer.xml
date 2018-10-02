@@ -8,6 +8,10 @@
         android:title="Search"
         android:id="@+id/nav_search"
         android:icon="@drawable/search"/>
+    <item
+        android:title="Account"
+        android:id="@+id/nav_account"
+        android:icon="@drawable/man_user"/>
 
     <item android:title="Categories">
         <menu android:checkableBehavior="single">
@@ -40,9 +44,9 @@
                 android:icon="@drawable/sign_out"
                 android:title="Sign out" />
             <item
-                    android:id="@+id/nav_login"
-                    android:icon="@drawable/login_key"
-                    android:title="Login" />
+                android:id="@+id/nav_login"
+                android:icon="@drawable/login_key"
+                android:title="Login" />
         </menu>
     </item>
 

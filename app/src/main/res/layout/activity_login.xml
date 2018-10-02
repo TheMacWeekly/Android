@@ -1,64 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="56dp"
+    android:paddingTop="150dp"
     android:id="@+id/root_activity_login">
 
     <ImageView
-        android:id="@+id/btnGoogleLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="72dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/common_google_signin_btn_text_dark" />
-
-    <android.support.design.widget.TextInputLayout
+        android:id="@+id/iv_tmw_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp">
+        android:contentDescription="@string/app_name"
+        android:gravity="center"
+        android:src="@drawable/tmw_svg" />
 
-        <EditText
-            android:id="@+id/etEmail"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="100dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/btn_student_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_weight="0.4"
+            android:text="@string/student_login"
+            android:theme="@style/LoginButton" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp">
-
-        <EditText
-            android:id="@+id/etPassword"
+        <Button
+            android:id="@+id/btn_alumni_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginTop="4dp"
+            android:text="@string/alumni_login"
+            android:theme="@style/LoginButton" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="24dp"
-        android:padding="12dp"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:text="Register" />
-
+        <TextView
+            android:id="@+id/tv_continue_as_guest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0.2"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="end"
+            android:text="@string/continue_as_guest" />
+    </LinearLayout>
 </LinearLayout>

@@ -2,13 +2,20 @@ package hu.ait.macweekly;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.PriorityQueue;
+import java.util.regex.Pattern;
 
 /**
  * Created by Mack on 7/28/2017.
  */
 
 public class MacWeeklyUtils {
+
+    public static final Pattern MACALESTER_EMAIL_ADDRESS
+            = Pattern.compile("^[A-Z0-9._%+-]+@macalester.edu", Pattern.CASE_INSENSITIVE);
+
+    public static boolean isMacalesterEmail(String email) {
+        return MACALESTER_EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     public static boolean isTextEmpty(String text) {
         if (text == null || text.equals("")) {
