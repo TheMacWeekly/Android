@@ -97,6 +97,8 @@ public class LoginActivity extends BaseActivity {
         else {
             FirebaseAuth.getInstance().signInAnonymously();
         }
+
+        Log.e("Clicked ", "clicked");
     }
 
     @Override
