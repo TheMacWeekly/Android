@@ -176,4 +176,5 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
     <string name="title_activity_author">AuthorActivity</string>
+    <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
 </resources>

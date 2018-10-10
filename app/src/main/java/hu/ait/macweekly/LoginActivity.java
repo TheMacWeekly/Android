@@ -78,6 +78,12 @@ public class LoginActivity extends BaseActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
+    @OnClick(R.id.tvPrivacyPolicy)
+    public void privacyIntent(View view) {
+        Intent i = new Intent(LoginActivity.this, PrivacyPolicyActivity.class);
+        startActivity(i);
+    }
+
     @OnClick(R.id.btn_alumni_login)
     public void alumniLogin(View view) {
         startActivityForResult(new Intent(LoginActivity.this, AlumniLoginActivity.class), RC_ALUMNI_LOGIN);
