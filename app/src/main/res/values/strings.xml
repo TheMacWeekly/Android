@@ -130,11 +130,11 @@
     <string name="email_sent">Email sent successfully</string>
     <string name="unable_find_email_app">Unable to find email application</string>
 
-    <string name ="phone_manufacturer">Manufacturer: %1$s </string>
-    <string name ="phone_screen_resolution">Resolution: %1$d x %2$d </string>
-    <string name ="phone_os">OS Version: %1$s </string>
-    <string name ="phone_model">Model: %1$s </string>
-    <string name ="phone_hardware">Hardware: %1$s </string>
+    <string name="phone_manufacturer">Manufacturer: %1$s </string>
+    <string name="phone_screen_resolution">Resolution: %1$d x %2$d </string>
+    <string name="phone_os">OS Version: %1$s </string>
+    <string name="phone_model">Model: %1$s </string>
+    <string name="phone_hardware">Hardware: %1$s </string>
     <string name="phone_serial">Serial #: %1$s</string>
     <string name="phone_tags">Tags: %1$s</string>
     <string name="email_report_cancel">Email Canceled</string>
@@ -158,5 +158,6 @@
     <string name="registrationok">Registration successful</string>
     <string name="verification_email_sent">Verification email sent</string>
     <string name="signoutok">Sign out successful</string>
+    <string name="title_activity_privacy_policy">PrivacyPolicyActivity</string>
 
 </resources>
