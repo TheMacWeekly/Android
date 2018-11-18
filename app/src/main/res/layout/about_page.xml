@@ -45,7 +45,19 @@
         android:layout_height="wrap_content"
         android:text="@string/creators_string"
         android:textColor="@color/gray3"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="6dp"
         android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/tvPrivacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Privacy Policy"
+        android:clickable="true"
+        android:gravity="center|bottom"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/gray3" />
 
 </LinearLayout>
